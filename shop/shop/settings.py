@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ysy_+!lho6k4h^huop#!5^mlw@ogr6be)80!%(kmolc=6z89&7'
+SECRET_KEY = 'django-insecure-@fpf@i=x!gdgrjrr9s6!@mx+gz3yp_n!gp(yvnic9sbcdh06gz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shop_db',
+        'NAME': 'shop_project',
         'USER': 'postgres',
         'PASSWORD': '33551122a',
         'HOST': 'localhost',
@@ -127,5 +127,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# custome user model
 AUTH_USER_MODEL = 'users.CustomUser'
