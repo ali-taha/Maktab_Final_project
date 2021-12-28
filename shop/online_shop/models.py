@@ -46,12 +46,12 @@ class StoreType(models.Model):
         return self.title
 
 REV = 'rev'
-REG = 'reg'
+CON = 'con'
 DEL = 'del'
 STORE_STATUS_CHOICES = [
-        (REV,'review_mode'),
-        (REG,'registered_mode'),
-        (DEL,'deleted_mode'),
+        (REV,'Review mode'),
+        (CON,'Confirmed mode'),
+        (DEL,'Deleted mode'),
     ]        
    
 class Store(models.Model):
@@ -103,10 +103,10 @@ REV = 'rev'
 CAN = 'can'
 PAI = 'pai'
 BASKET_STATUS_CHOICES = [
-        (CON,'confirmed'),
-        (REV,'review'),
-        (CAN,'canceled'),
-        (PAI,'paid'),
+        (CON,'Confirmed'),
+        (REV,'Review'),
+        (CAN,'Canceled'),
+        (PAI,'Paid'),
     ]             
 
 class Basket(models.Model):
