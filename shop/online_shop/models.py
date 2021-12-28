@@ -65,12 +65,6 @@ class Store(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super(Store, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.title
 
@@ -93,15 +87,15 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
-        qs = ProductCategory.objects.filter(slug=self.slug)
+        qs = Product.objects.filter(slug=self.slug)
         exists = qs.exists()
         while exists:
             randumber = randint(1, 1000)
             new_slug = self.slug + str(randumber)
             self.slug = slugify(new_slug)
-            qs = ProductCategory.objects.filter(slug=self.slug)
+            qs = Product.objects.filter(slug=self.slug)
             exists = qs.exists()
-        return super(ProductCategory, self).save(*args, **kwargs)
+        return super(Product, self).save(*args, **kwargs)
 
 
 CON = 'con'
@@ -125,13 +119,18 @@ class Basket(models.Model):
     class Meta:
         ordering = ['paid_on']
 
-    def __str__(self):
-        return self.owner
 
 class BasketItem(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
 
-    def __str__(self):
-        return self.basket
+    def save(self, *args, **kwargs):
+        price = self.product.price
+        self.basket.total_price += (self.count * price)
+        self.basket.save()
+        self.product.stock = self.product.stock - self.count
+        self.product.save()
+        super(BasketItem, self).save(*args, **kwargs)
+
+ 
