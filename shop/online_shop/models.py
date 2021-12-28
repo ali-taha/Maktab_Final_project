@@ -133,4 +133,14 @@ class BasketItem(models.Model):
         self.product.save()
         super(BasketItem, self).save(*args, **kwargs)
 
+    def delete(self):
+     basketitem = BasketItem.objects.get(id=self.id)
+     price = self.product.price
+     if basketitem:
+            self.basket.total_price -= (self.count * price)
+            self.basket.save()
+            self.product.stock = self.product.stock + self.count
+            self.product.save()
+     super(BasketItem, self).delete()    
+
  
