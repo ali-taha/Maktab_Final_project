@@ -23,4 +23,4 @@ urlpatterns = [
     path('',include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.site_header = 'Online_Shop Admin'
+admin.site.site_header = 'Shop Admin'

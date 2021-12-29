@@ -92,7 +92,7 @@ class BlogComment(models.Model):
         return super(BlogComment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"post:{self.post},user:{self.user}"
+        return self.user
 
     class Meta:
         ordering = ["post"]

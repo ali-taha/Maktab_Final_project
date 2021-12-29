@@ -113,31 +113,40 @@ class Basket(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, on_delete=models.PROTECT, null=True)
     total_price = models.IntegerField(default=0)
-    status = models.CharField(max_length=3,choices=STORE_STATUS_CHOICES,default=REV)
+    count_items = models.IntegerField(default=0)
+    status = models.CharField(max_length=3,choices=BASKET_STATUS_CHOICES,default=REV)
     paid_on = models.DateTimeField(null=True,blank=True)
 
     class Meta:
         ordering = ['paid_on']
+
+    def __str__(self):
+        return str(self.id)    
 
 
 class BasketItem(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
+    buy_price = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         price = self.product.price
-        self.basket.total_price += (self.count * price)
-        self.basket.save()
-        self.product.stock = self.product.stock - self.count
-        self.product.save()
-        super(BasketItem, self).save(*args, **kwargs)
+        if self.product.stock >= self.count:
+            self.basket.total_price += (self.count * price)
+            self.basket.count_items += self.count
+            self.buy_price = price
+            self.basket.save()
+            self.product.stock = self.product.stock - self.count
+            self.product.save()
+            super(BasketItem, self).save(*args, **kwargs)
 
     def delete(self):
      basketitem = BasketItem.objects.get(id=self.id)
      price = self.product.price
      if basketitem:
             self.basket.total_price -= (self.count * price)
+            self.basket.count_items -= self.count
             self.basket.save()
             self.product.stock = self.product.stock + self.count
             self.product.save()
