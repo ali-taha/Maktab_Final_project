@@ -11,3 +11,9 @@ class TemplateView2(TemplateView):
 class TemplateView3(TemplateView):
     template_name = "shop_dashboard/sign-up.html"    
 
+class TemplateView4(TemplateView):
+    template_name = "shop_dashboard/profile.html" 
+
+class TemplateView5(TemplateView):
+    template_name = "shop_dashboard/tables.html"         
+
