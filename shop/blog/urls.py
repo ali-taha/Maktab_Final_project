@@ -10,8 +10,6 @@ urlpatterns = [
     path("category/<slug:slug>", category_post, name="category_post"),
     path("tag/", TagList.as_view(), name="tags"),
     path("tag/<slug:slug>", tag_post, name="tag_post"),
-    path("theme-view", TemplateView.as_view()),
-    path("post-view", PostView.as_view()),
     
     path("login", login_form, name="login_form"),
     path("logout", logout_view, name="logout"),
