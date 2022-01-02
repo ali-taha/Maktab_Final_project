@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from .models import Store
 
 
 User = get_user_model()
@@ -34,3 +35,9 @@ class SelllerLoginForm(forms.Form):
     password = forms.CharField(
         max_length=120, widget=forms.PasswordInput, label="password"
     )            
+
+class CreateStoreForm(forms.ModelForm):
+
+    class Meta:
+        model = Store
+        fields = ["title", "description", "type", "location_lat","location_lng"]
