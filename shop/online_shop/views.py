@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Store
 from django.http import Http404
+from django.db.models import Q
 from django.shortcuts import (
     redirect,
     render,
@@ -64,24 +65,28 @@ class TemplateView4(TemplateView):
     template_name = "shop_dashboard/profile.html" 
  
 
-
 class CreateStore(FormView):
       template_name = "shop_dashboard/create_store.html"  
       form_class = CreateStoreForm 
 
 
       def form_valid(self, form):
-            store = Store.objects.create(
-            title = form.cleaned_data["title"],
-            description =form.cleaned_data["description"],
-            type=form.cleaned_data["type"],
-            location_lat=form.cleaned_data["location_lat"],
-            location_lng=form.cleaned_data["location_lng"],
-            owner = self.request.user,
-        )
-            store.save()
-            messages.success(self.request, "Your store successfully Created, Wait for Confirm")
-            return super().form_valid(form)  
+            denied = Store.objects.filter(Q(owner=self.request.user) & Q(status ='rev'))
+            if not denied:
+                store = Store.objects.create(
+                title = form.cleaned_data["title"],
+                description =form.cleaned_data["description"],
+                type=form.cleaned_data["type"],
+                location_lat=form.cleaned_data["location_lat"],
+                location_lng=form.cleaned_data["location_lng"],
+                owner = self.request.user,
+            )
+                store.save()
+                messages.success(self.request, "Your store successfully Created, Wait for Confirm")
+                return super().form_valid(form) 
+            else:
+                messages.warning(self.request, "You Have a Store in Review Mode")  
+                return super().form_invalid(form)   
 
       def get_success_url(self):
         return reverse('store_detail') 
