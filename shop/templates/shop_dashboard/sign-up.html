@@ -13,6 +13,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +23,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'shop_dashboard/img/apple-icon.png' %}">
   <link rel="icon" type="image/png" href="{% static 'shop_dashboard/img/favicon.png' %}">
   <title>
-    Material Dashboard 2 by Creative Tim
+    Sellers Sign-up
   </title>
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -45,7 +46,7 @@
         <nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
           <div class="container-fluid ps-2 pe-0">
             <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="../pages/dashboard.html">
-              Material Dashboard 2
+              Sellers Sign-up
             </a>
             <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon mt-2">
@@ -81,11 +82,11 @@
                   </a>
                 </li>
               </ul>
-              <ul class="navbar-nav d-lg-block d-none">
+              <!-- <ul class="navbar-nav d-lg-block d-none">
                 <li class="nav-item">
                   <a href="https://www.creative-tim.com/product/material-dashboard" class="btn btn-sm mb-0 me-1 bg-gradient-dark">Free download</a>
                 </li>
-              </ul>
+              </ul> -->
             </div>
           </div>
         </nav>
@@ -106,15 +107,53 @@
               <div class="card card-plain">
                 <div class="card-header">
                   <h4 class="font-weight-bolder">Sign Up</h4>
-                  <p class="mb-0">Enter your email and password to register</p>
+                  <p class="mb-0">Fill out the form below to register</p>
                 </div>
                 <div class="card-body">
-                  <form role="form">
-                    <div class="input-group input-group-outline mb-3">
-                      <label class="form-label">Name</label>
-                      <input type="text" class="form-control">
+                  
+
+                  <form method="post" action="{% url 'sign-up' %}">
+                    {% csrf_token %}
+                
+                    {% for hidden in form.hidden_fields %}
+                      {{ hidden }}
+                    {% endfor %}
+                
+                    {% for field in form.visible_fields %}
+                      <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        {% for error in field.errors %}
+                          <span class="help-block">{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+                
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-ok"></span> Save
+                      </button>
+                      <a href="{% url 'home' %}" class="btn btn-default">Cancel</a>
                     </div>
+                  </form>
+
+
+                  {% comment %} <form role="form" action="{% url 'sign-up' %}" method="post">
+                    {% csrf_token %}
+                    {% for hidden in form.hidden_fields %}
+                     {{ hidden }}
+                      {% endfor %}
+                    {% for field in form.visible_fields %}
                     <div class="input-group input-group-outline mb-3">
+                      <label  for="{{ field.id_for_label }}"  class="form-label">{{ field.label }}</label>
+                      {{ field|add_class:'form-control' }}
+                      {{ field }}
+                      {% for error in field.errors %}
+                      <span class="help-block">{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% endfor %} {% endcomment %}
+                    {% comment %} <div class="input-group input-group-outline mb-3">
                       <label class="form-label">Email</label>
                       <input type="email" class="form-control">
                     </div>
@@ -122,16 +161,24 @@
                       <label class="form-label">Password</label>
                       <input type="password" class="form-control">
                     </div>
-                    <div class="form-check form-check-info text-start ps-0">
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label">Repeat Password</label>
+                      <input type="password" class="form-control">
+                    </div>
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label">Phone Number</label>
+                      <input type="text" class="form-control">
+                    </div> {% endcomment %}
+                    <!-- <div class="form-check form-check-info text-start ps-0">
                       <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
                       <label class="form-check-label" for="flexCheckDefault">
                         I agree the <a href="javascript:;" class="text-dark font-weight-bolder">Terms and Conditions</a>
                       </label>
-                    </div>
-                    <div class="text-center">
-                      <button type="button" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign Up</button>
-                    </div>
-                  </form>
+                    </div> -->
+                    {% comment %} <div class="text-center">
+                      <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign Up</button>
+                    </div> {% endcomment %}
+                  {% comment %} </form> {% endcomment %}
                 </div>
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                   <p class="mb-2 text-sm mx-auto">
