@@ -45,6 +45,10 @@ class StoreType(models.Model):
     def __str__(self):
         return self.title
 
+class ExcludeDeletedStores(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(status=DEL)
+      
 REV = 'rev'
 CON = 'con'
 DEL = 'del'
@@ -64,6 +68,9 @@ class Store(models.Model):
     location_lng =  models.DecimalField(max_digits=5, decimal_places=2,null=True,blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    alive = ExcludeDeletedStores()
 
     def __str__(self):
         return self.title

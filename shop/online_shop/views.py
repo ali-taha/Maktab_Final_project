@@ -92,7 +92,7 @@ class SellerStoreList(ListView):
     paginate_by = 100
 
     def get_queryset(self, *args, **kwargs):
-        queryset = Store.objects.filter(owner=self.request.user)
+        queryset = Store.alive.filter(owner=self.request.user)
         return queryset
 
 class DeleteStore(DeleteView):
