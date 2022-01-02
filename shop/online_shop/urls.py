@@ -10,5 +10,6 @@ urlpatterns = [
     path('store_detail',SellerStoreList.as_view(), name='store_detail'),
     path('create_store',CreateStore.as_view(), name='create_store'),
     path('delete_store/<pk>',DeleteStore.as_view(), name='delete_store'),
+    path('edit_store/<pk>',EditStore.as_view(), name='edit_store'),
 
 ]

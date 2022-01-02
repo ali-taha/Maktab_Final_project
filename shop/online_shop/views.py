@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView
 from django.views.generic.edit import FormView
 from .forms import RegisterSeller , SelllerLoginForm, CreateStoreForm
 from django.contrib.auth import authenticate, login, get_user_model, logout
@@ -107,7 +107,24 @@ class DeleteStore(DeleteView):
         obj = super(DeleteView, self).get_object()
         if not obj.owner == self.request.user:
             raise Http404
-        return obj       
+        return obj   
+
+class EditStore(UpdateView):
+    template_name = 'shop_dashboard/edit_store.html'  
+    model = Store
+
+    fields = ["title", "description", "type", "location_lat","location_lng"]
+
+    def get_object(self, queryset=None):
+        """ Hook to ensure object is owned by request.user. """
+        obj = super(UpdateView, self).get_object()
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj         
+
+    def get_success_url(self):
+        return reverse('store_detail') 
+         
      
                   
 
