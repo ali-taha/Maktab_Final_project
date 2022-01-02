@@ -26,3 +26,11 @@ class RegisterSeller(forms.ModelForm):
             if new_password != repeat_password:
                 raise ValidationError("password and repeat password must be same")
             return repeat_password
+
+
+
+class SelllerLoginForm(forms.Form):
+    username = forms.CharField(max_length=120, label="username")
+    password = forms.CharField(
+        max_length=120, widget=forms.PasswordInput, label="password"
+    )            
