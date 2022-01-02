@@ -68,6 +68,11 @@ class Store(models.Model):
     def __str__(self):
         return self.title
 
+    def delete(self):
+        self.status = DEL
+        self.save()
+        pass    
+
 class Product(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
