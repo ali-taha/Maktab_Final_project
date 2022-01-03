@@ -54,7 +54,7 @@ class SignInSeller(FormView):
 
 
 class SellerStoreList(ListView):
-    template_name = 'shop_dashboard/store_list.html'
+    template_name = 'seller_dashboard/store_list.html'
     paginate_by = 100
 
     def get_queryset(self, *args, **kwargs):
@@ -63,7 +63,7 @@ class SellerStoreList(ListView):
 
 
 class CreateStore(FormView):
-      template_name = "shop_dashboard/create_store.html"  
+      template_name = "seller_dashboard/create_store.html"  
       form_class = CreateStoreForm 
 
       def form_valid(self, form):
@@ -127,7 +127,7 @@ class DeleteStore(DeleteView):
 
 
 class AddProduct(FormView):
-    template_name = "shop_dashboard/add_product.html"        
+    template_name = "seller_dashboard/add_product.html"        
     form_class = AddProductForm
 
     def get_form_kwargs(self):
@@ -172,7 +172,7 @@ class BasketDetail(ListView):
             
 
 class TemplateView4(TemplateView):
-    template_name = "shop_dashboard/profile.html" 
+    template_name = "seller_dashboard/profile.html" 
 
 class TemplateView(TemplateView):
-    template_name = "shop_dashboard/index.html"
+    template_name = "shop_dashboard/main_shop_dashboard.html"

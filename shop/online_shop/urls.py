@@ -4,6 +4,8 @@ from .views import *
 
 urlpatterns = [
     path('',TemplateView.as_view(), name='dashboard'),
+    path('profile',TemplateView4.as_view(), name= 'profile'),
+
     path('sign-in',SignInSeller.as_view(), name='sign_in'),
     path('sign-up',SignUpSeller.as_view() , name='sign_up'),
     path('store-list',SellerStoreList.as_view(), name='store_list'),
@@ -17,7 +19,6 @@ urlpatterns = [
     
     
     
-    path('profile',TemplateView4.as_view(), name= 'profile'),
 
 
 
