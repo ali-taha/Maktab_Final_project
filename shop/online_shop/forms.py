@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from .models import Store
+from .models import Store, Product
 
 
 User = get_user_model()
@@ -41,3 +41,16 @@ class CreateStoreForm(forms.ModelForm):
     class Meta:
         model = Store
         fields = ["title", "description", "type", "location_lat","location_lng"]
+
+class AddProductForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(AddProductForm, self).__init__(*args, **kwargs)
+        self.fields['store'].queryset = Store.alive.filter(owner=self.request.user)
+    store = forms.ModelChoiceField(queryset = Store.alive.filter())
+    
+
+    class Meta:
+        model = Product 
+        fields = ["store", "category", "title", "tag", "stock", "image", "description", "price"]       
