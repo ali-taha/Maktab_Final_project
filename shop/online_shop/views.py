@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView
 from django.views.generic.edit import FormView
-from .forms import RegisterSeller , SelllerLoginForm, CreateStoreForm
+from .forms import RegisterSeller , SelllerLoginForm, CreateStoreForm, AddProductForm
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.urls import reverse
 from django.contrib import messages
-from .models import Store
+from .models import Store, Product
 from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
@@ -102,7 +102,13 @@ class EditStore(UpdateView):
         return obj         
 
     def get_success_url(self):
-        return reverse('store_list')         
+        return reverse('store_list')   
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.status = 'rev'
+        self.object.save()
+        return super().post(request, *args, **kwargs)          
 
 
 class DeleteStore(DeleteView):
@@ -119,6 +125,27 @@ class DeleteStore(DeleteView):
             raise Http404
         return obj   
 
+
+class AddProduct(FormView):
+    template_name = "shop_dashboard/add_product.html"        
+    form_class = AddProductForm
+
+    def get_form_kwargs(self):
+        kwargs = super(AddProduct, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+                form.save()
+                messages.success(self.request, "Your Product successfully Added ")
+                return super().form_valid(form)    
+
+    def get_success_url(self):
+        return reverse('store_list')     
+
+    
+
+    
 
          
             
