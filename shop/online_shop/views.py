@@ -8,38 +8,9 @@ from django.contrib import messages
 from .models import Store
 from django.http import Http404
 from django.db.models import Q
-from django.shortcuts import (
-    redirect,
-    render,
-    get_list_or_404,
-    get_object_or_404,
-    HttpResponse,
-)
+from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 
 User = get_user_model()
-
-
-class TemplateView(TemplateView):
-    template_name = "shop_dashboard/index.html"
-
-class SignInSeller(FormView):
-    template_name = "shop_dashboard/sign-in.html"
-    form_class = SelllerLoginForm
-
-    def form_valid(self, form):
-            user = authenticate(
-                username=form.cleaned_data.get("username"),
-                password=form.cleaned_data.get("password"),
-            )
-            if user is not None:
-                login(self.request, user)
-                messages.success(self.request, "You have logged in successfully")
-            else:
-                HttpResponse("user not true")  
-            return super().form_valid(form)  
-
-    def get_success_url(self):
-        return reverse('dashboard')
 
 
 class SignUpSeller(FormView):
@@ -61,14 +32,39 @@ class SignUpSeller(FormView):
     def get_success_url(self):
         return reverse('sign_in')
 
-class TemplateView4(TemplateView):
-    template_name = "shop_dashboard/profile.html" 
- 
+
+class SignInSeller(FormView):
+    template_name = "shop_dashboard/sign-in.html"
+    form_class = SelllerLoginForm
+
+    def form_valid(self, form):
+            user = authenticate(
+                username=form.cleaned_data.get("username"),
+                password=form.cleaned_data.get("password"),
+            )
+            if user is not None:
+                login(self.request, user)
+                messages.success(self.request, "You have logged in successfully")
+            else:
+                HttpResponse("user not true")  
+            return super().form_valid(form)  
+
+    def get_success_url(self):
+        return reverse('dashboard')
+
+
+class SellerStoreList(ListView):
+    template_name = 'shop_dashboard/store_list.html'
+    paginate_by = 100
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = Store.alive.filter(owner=self.request.user)
+        return queryset        
+
 
 class CreateStore(FormView):
       template_name = "shop_dashboard/create_store.html"  
       form_class = CreateStoreForm 
-
 
       def form_valid(self, form):
             denied = Store.objects.filter(Q(owner=self.request.user) & Q(status ='rev'))
@@ -92,13 +88,22 @@ class CreateStore(FormView):
         return reverse('store_list') 
 
 
-class SellerStoreList(ListView):
-    template_name = 'shop_dashboard/store_list.html'
-    paginate_by = 100
+class EditStore(UpdateView):
+    template_name = 'shop_dashboard/edit_store.html'  
+    model = Store
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = Store.alive.filter(owner=self.request.user)
-        return queryset
+    fields = ["title", "description", "type", "location_lat","location_lng"]
+
+    def get_object(self, queryset=None):
+        """ Hook to ensure object is owned by request.user. """
+        obj = super(UpdateView, self).get_object()
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj         
+
+    def get_success_url(self):
+        return reverse('store_list')         
+
 
 class DeleteStore(DeleteView):
     template_name = 'shop_dashboard/delete_store.html' 
@@ -114,22 +119,12 @@ class DeleteStore(DeleteView):
             raise Http404
         return obj   
 
-class EditStore(UpdateView):
-    template_name = 'shop_dashboard/edit_store.html'  
-    model = Store
 
-    fields = ["title", "description", "type", "location_lat","location_lng"]
-
-    def get_object(self, queryset=None):
-        """ Hook to ensure object is owned by request.user. """
-        obj = super(UpdateView, self).get_object()
-        if not obj.owner == self.request.user:
-            raise Http404
-        return obj         
-
-    def get_success_url(self):
-        return reverse('store_list') 
          
-     
-                  
+            
 
+class TemplateView4(TemplateView):
+    template_name = "shop_dashboard/profile.html" 
+
+class TemplateView(TemplateView):
+    template_name = "shop_dashboard/index.html"
