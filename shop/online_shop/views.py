@@ -59,7 +59,7 @@ class SignUpSeller(FormView):
             return super().form_valid(form)  
 
     def get_success_url(self):
-        return reverse('dashboard')
+        return reverse('sign_in')
 
 class TemplateView4(TemplateView):
     template_name = "shop_dashboard/profile.html" 
@@ -89,7 +89,7 @@ class CreateStore(FormView):
                 return super().form_invalid(form)   
 
       def get_success_url(self):
-        return reverse('store_detail') 
+        return reverse('store_list') 
 
 
 class SellerStoreList(ListView):
@@ -105,7 +105,7 @@ class DeleteStore(DeleteView):
     model = Store
 
     def get_success_url(self):
-        return reverse('store_detail')
+        return reverse('store_list')
 
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
@@ -128,7 +128,7 @@ class EditStore(UpdateView):
         return obj         
 
     def get_success_url(self):
-        return reverse('store_detail') 
+        return reverse('store_list') 
          
      
                   
