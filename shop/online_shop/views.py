@@ -5,7 +5,7 @@ from .forms import RegisterSeller , SelllerLoginForm, CreateStoreForm, AddProduc
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.urls import reverse
 from django.contrib import messages
-from .models import Store, Product
+from .models import Store, Product, Basket, BasketItem
 from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
@@ -136,16 +136,37 @@ class AddProduct(FormView):
         return kwargs
 
     def form_valid(self, form):
-                form.save()
-                messages.success(self.request, "Your Product successfully Added ")
-                return super().form_valid(form)    
+        form.save()
+        messages.success(self.request, "Your Product successfully Added")
+        return super().form_valid(form)    
 
     def get_success_url(self):
         return reverse('store_list')     
 
     
+class StoreBasketList(ListView):
+    template_name = 'shop_dashboard/basket_list.html'
+    paginate_by = 100
 
+    def get_queryset(self, *args, **kwargs):
+        store = Store.objects.get(id=self.kwargs['pk'])
+        queryset = Basket.objects.filter(store = store )
+        return queryset
+
+class BasketDetail(ListView):
+    template_name = 'shop_dashboard/basket_detail.html'
     
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = BasketItem.objects.filter(basket__id=self.kwargs['pk'])
+        return queryset
+
+    def get_context_data(self,*args, **kwargs):
+        context = super(BasketDetail, self).get_context_data(*args,**kwargs)
+        context['basket'] = Basket.objects.get(id=self.kwargs['pk'])
+        return context    
+    
+
 
          
             

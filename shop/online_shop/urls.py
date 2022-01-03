@@ -11,6 +11,12 @@ urlpatterns = [
     path('delete-store/<pk>',DeleteStore.as_view(), name='delete_store'),
     path('edit-store/<pk>',EditStore.as_view(), name='edit_store'),
     path('add-product',AddProduct.as_view(), name='add_product'),
+    path('basket-list/<pk>',StoreBasketList.as_view(), name='basket_list'),
+    path('basket-detail/<pk>',BasketDetail.as_view(), name='basket_detail'),
+
+    
+    
+    
     path('profile',TemplateView4.as_view(), name= 'profile'),
 
 
