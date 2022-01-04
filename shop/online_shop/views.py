@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView, View
 from django.views.generic.edit import FormView, ModelFormMixin, FormMixin
 from .forms import CreateStoreForm, AddProductForm, UpdateBasketForm
 from django.contrib.auth import  get_user_model
@@ -155,7 +155,6 @@ class BasketDetail(ListView):
         context['basket'] = Basket.objects.get(id=self.kwargs['pk'])
         return context  
 
-
 class UpdateMyStatus(UpdateView):
     model = Basket
     form_class = UpdateBasketForm
@@ -164,7 +163,16 @@ class UpdateMyStatus(UpdateView):
         return reverse('store_list')           
         
     
+class ChartView(View):
 
+    
+
+    def get(self, request, *args, **kwargs):
+            return render(
+        request, "seller_dashboard/chart.html",{"post":123}
+    )
+
+    
 
          
             

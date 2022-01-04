@@ -13,8 +13,10 @@ urlpatterns = [
     path('add-product',AddProduct.as_view(), name='add_product'),
     path('basket-list/<pk>',StoreBasketList.as_view(), name='basket_list'),
     path('basket-detail/<pk>',BasketDetail.as_view(), name='basket_detail'),
-
     path('basket_update/<pk>',UpdateMyStatus.as_view(), name='basket_update'),
+
+
+    path('chart',ChartView.as_view(), name='chart'),
 
 
 ]
