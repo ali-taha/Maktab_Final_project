@@ -11,7 +11,7 @@
           <div class="card my-4">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                <h6 class="text-white text-capitalize ps-3">Baskets Of ????</h6>
+                <h6 class="text-white text-capitalize ps-3">Baskets Of</h6>
               </div>
             </div>
             <div class="card-body px-0 pb-2">
@@ -24,7 +24,8 @@
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created Time</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payid On</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Updated On</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Change Status</th>
 
                       <th class="text-secondary opacity-7"></th>
                     </tr>
@@ -52,12 +53,17 @@
                         <span class="text-secondary text-xs font-weight-bold">{{item.created_on}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">{{item.paid_on}}</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{item.updated_on}}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <form method="post" id="editForm" item-id={{item.id}} action="{% url 'basket_update' item.id %}">
+                          {% csrf_token %}
+                          {{form.as_p}}
+                          <button type="sumbit" class="btn btn-link text-dark px-3 mb-0 changer" ><i class="material-icons text-sm me-2">edit</i>Save</button>
+                        </form>
                       </td>
                       <td class="align-middle ">
                         <a class="btn btn-link text-dark px-3 mb-0" href="{% url 'basket_detail' item.pk %}"><i class="material-icons text-sm me-2">receipt</i>Detail</a>
-                        <button type="button" class="btn btn-link text-dark px-3 mb-0" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="material-icons text-sm me-2">edit</i>Detail</button>
-                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="{% url 'delete_store' item.pk %}"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                       </td>
                     </tr>
                     {% endfor %}
@@ -69,3 +75,5 @@
         </div>
 
         {% endblock main_content %}
+
+

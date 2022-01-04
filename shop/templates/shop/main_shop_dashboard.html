@@ -21,6 +21,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->
   <link id="pagestyle" href="{% static 'shop_dashboard/css/material-dashboard.css' %}" rel="stylesheet" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
@@ -618,6 +621,7 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static 'shop_dashboard/js/material-dashboard.min.js' %}"></script>
+  {% block extra_script %}{% endblock extra_script%}
 </body>
 
 </html>

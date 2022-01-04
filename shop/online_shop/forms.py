@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from .models import Store, Product
+from .models import Store, Product, Basket
 
 
 User = get_user_model()
@@ -53,4 +53,10 @@ class AddProductForm(forms.ModelForm):
 
     class Meta:
         model = Product 
-        fields = ["store", "category", "title", "tag", "stock", "image", "description", "price"]       
+        fields = ["store", "category", "title", "tag", "stock", "image", "description", "price"]      
+
+class UpdateBasketForm(forms.ModelForm):
+
+    class Meta:
+        model = Basket
+        fields = ["status"]

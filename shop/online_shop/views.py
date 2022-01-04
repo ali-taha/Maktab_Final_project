@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView
-from django.views.generic.edit import FormView
-from .forms import CreateStoreForm, AddProductForm
+from django.views.generic.edit import FormView, ModelFormMixin, FormMixin
+from .forms import CreateStoreForm, AddProductForm, UpdateBasketForm
 from django.contrib.auth import  get_user_model
 from django.urls import reverse
 from django.contrib import messages
@@ -105,15 +105,43 @@ class AddProduct(FormView):
         return reverse('store_list')     
 
     
-class StoreBasketList(ListView):
+class StoreBasketList(FormMixin,ListView):
     template_name = 'seller_dashboard/basket_list.html'
     paginate_by = 100
+    form_class = UpdateBasketForm
 
-    def get_queryset(self, *args, **kwargs):
+
+    def get_queryset(self):
         store = Store.objects.get(id=self.kwargs['pk'])
-        queryset = Basket.objects.filter(store = store )
-        return queryset
+        queryset = Basket.objects.filter(store = store)
+        return queryset   
 
+    # def get_context_data(self, **kwargs):
+    #     context = super(StoreBasketList, self).get_context_data(**kwargs)
+    #     context["form"] = self.get_form()
+    #     return context    
+
+    # def get_context_data(self,*args, **kwargs):
+    #     context = super(StoreBasketList, self).get_context_data(*args,**kwargs)
+    #     context['store'] = Store.objects.get(id=self.kwargs['pk'])
+    #     return context    
+
+    # def get_queryset(self, *args, **kwargs):
+    #     store = Store.objects.get(id=self.kwargs['pk'])
+    #     queryset = Basket.objects.filter(store = store)
+    #     return queryset
+
+    # def post(self, request, *args, **kwargs):
+    #     form = self.get_form()
+    #     if form.is_valid():
+    #         id=self.kwargs['pk'] 
+    #         status = form.cleaned_data['status']
+    #         obj = Basket.objects.get(id=id)
+    #         obj.status = status
+    #         obj.save()
+    #         return self.form_valid(form)
+    #     else:
+    #         return self.form_invalid(form)
 
 class BasketDetail(ListView):
     template_name = 'seller_dashboard/basket_detail.html'
@@ -125,7 +153,16 @@ class BasketDetail(ListView):
     def get_context_data(self,*args, **kwargs):
         context = super(BasketDetail, self).get_context_data(*args,**kwargs)
         context['basket'] = Basket.objects.get(id=self.kwargs['pk'])
-        return context    
+        return context  
+
+
+class UpdateMyStatus(UpdateView):
+    model = Basket
+    form_class = UpdateBasketForm
+
+    def get_success_url(self):
+        return reverse('store_list')           
+        
     
 
 
