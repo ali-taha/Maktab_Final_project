@@ -1,0 +1,36 @@
+{% extends "shop/main_shop_dashboard.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title_1 %}Delete Store{% endblock title_1 %}
+{% block title_2 %}Delete Store{% endblock title_2 %}
+
+{% block main_content %}
+      
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">Delete Store</h6>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+
+              <!-- Delete Store -->
+              <form method="post">{% csrf_token %}
+     
+ 
+                <p>Are you sure you want to delete "{{ object }}"?</p>
+                 
+                 
+                    <input type="submit" value="Confirm">
+                </form>
+                  <!-- End Delete Store -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {% endblock main_content %}

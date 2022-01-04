@@ -1,56 +1,17 @@
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView
 from django.views.generic.edit import FormView
-from .forms import RegisterSeller , SelllerLoginForm, CreateStoreForm, AddProductForm
-from django.contrib.auth import authenticate, login, get_user_model, logout
+from .forms import CreateStoreForm, AddProductForm
+from django.contrib.auth import  get_user_model
 from django.urls import reverse
 from django.contrib import messages
 from .models import Store, Product, Basket, BasketItem
 from django.http import Http404
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 
 User = get_user_model()
 
-
-class SignUpSeller(FormView):
-    template_name = "shop_dashboard/sign-up.html" 
-    form_class = RegisterSeller
-
-    def form_valid(self, form):
-            user = User.objects.create_user(
-            form.cleaned_data["username"],
-            email=form.cleaned_data["email"],
-            password=form.cleaned_data["password"],
-            phone_number=form.cleaned_data["phone_number"],
-            is_seller = True,
-        )
-            user.save()
-            messages.success(self.request, "You have successfully joined")
-            return super().form_valid(form)  
-
-    def get_success_url(self):
-        return reverse('sign_in')
-
-
-class SignInSeller(FormView):
-    template_name = "shop_dashboard/sign-in.html"
-    form_class = SelllerLoginForm
-
-    def form_valid(self, form):
-            user = authenticate(
-                username=form.cleaned_data.get("username"),
-                password=form.cleaned_data.get("password"),
-            )
-            if user is not None:
-                login(self.request, user)
-                messages.success(self.request, "You have logged in successfully")
-            else:
-                HttpResponse("user not true")  
-            return super().form_valid(form)  
-
-    def get_success_url(self):
-        return reverse('dashboard')
 
 
 class SellerStoreList(ListView):
@@ -89,7 +50,7 @@ class CreateStore(FormView):
 
 
 class EditStore(UpdateView):
-    template_name = 'shop_dashboard/edit_store.html'  
+    template_name = 'seller_dashboard/edit_store.html'  
     model = Store
 
     fields = ["title", "description", "type", "location_lat","location_lng"]
@@ -112,7 +73,7 @@ class EditStore(UpdateView):
 
 
 class DeleteStore(DeleteView):
-    template_name = 'shop_dashboard/delete_store.html' 
+    template_name = 'seller_dashboard/delete_store.html' 
     model = Store
 
     def get_success_url(self):
@@ -145,7 +106,7 @@ class AddProduct(FormView):
 
     
 class StoreBasketList(ListView):
-    template_name = 'shop_dashboard/basket_list.html'
+    template_name = 'seller_dashboard/basket_list.html'
     paginate_by = 100
 
     def get_queryset(self, *args, **kwargs):
@@ -153,10 +114,10 @@ class StoreBasketList(ListView):
         queryset = Basket.objects.filter(store = store )
         return queryset
 
-class BasketDetail(ListView):
-    template_name = 'shop_dashboard/basket_detail.html'
-    
 
+class BasketDetail(ListView):
+    template_name = 'seller_dashboard/basket_detail.html'
+    
     def get_queryset(self, *args, **kwargs):
         queryset = BasketItem.objects.filter(basket__id=self.kwargs['pk'])
         return queryset
@@ -175,4 +136,4 @@ class TemplateView4(TemplateView):
     template_name = "seller_dashboard/profile.html" 
 
 class TemplateView(TemplateView):
-    template_name = "shop_dashboard/main_shop_dashboard.html"
+    template_name = "shop/main_shop_dashboard.html"

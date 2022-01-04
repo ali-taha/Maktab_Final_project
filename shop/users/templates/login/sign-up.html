@@ -131,9 +131,8 @@
                 
                     <div class="form-group">
                       <button type="submit" class="btn btn-success">
-                        <span class="glyphicon glyphicon-ok"></span> Save
+                        <span class="glyphicon glyphicon-ok"></span> Register
                       </button>
-                      <a href="{% url 'home' %}" class="btn btn-default">Cancel</a>
                     </div>
                   </form>
 
@@ -183,7 +182,7 @@
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                   <p class="mb-2 text-sm mx-auto">
                     Already have an account?
-                    <a href="../pages/sign-in.html" class="text-primary text-gradient font-weight-bold">Sign in</a>
+                    <a href="{% url 'sign_in' %}" class="text-primary text-gradient font-weight-bold">Sign in</a>
                   </p>
                 </div>
               </div>
