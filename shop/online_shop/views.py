@@ -170,11 +170,8 @@ class UpdateMyStatus(UpdateView):
     
 class ChartView(View):
 
-
-
     def get(self, request, *args, **kwargs):
         store_id = self.kwargs['pk']
-        # sells = Basket.objects.filter(Q(store__owner=seller)&Q(status="con")).aggregate(Avg('total_price'))
         sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="con")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')                    
         month=[]
         month_sell=[]
