@@ -24,6 +24,8 @@
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created Time</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Payid On</th>
+
                       <th class="text-secondary opacity-7"></th>
                     </tr>
                   </thead>
@@ -44,7 +46,10 @@
                         <span class="badge badge-sm bg-gradient-success">{{item.get_status_display}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">{{item.total_price}}</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{item.total_price}} T</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{item.created_on}}</span>
                       </td>
                       <td class="align-middle text-center">
                         <span class="text-secondary text-xs font-weight-bold">{{item.paid_on}}</span>
