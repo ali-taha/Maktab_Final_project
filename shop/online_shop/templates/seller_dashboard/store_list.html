@@ -50,6 +50,7 @@
                         <a class="btn btn-link text-dark px-3 mb-0" href="{% url 'edit_store' item.pk %}"><i class="material-icons text-sm me-2">edit</i>Edit</a>
                         <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="{% url 'delete_store' item.pk %}"><i class="material-icons text-sm me-2">delete</i>Delete</a>
                         <a class="btn btn-link text-dark text-gradient px-3 mb-0" href="{% url 'basket_list' item.pk %}"><i class="material-icons text-sm me-2">shopping_bag</i>BasKet-list</a>
+                        <a class="btn btn-link text-dark text-gradient px-3 mb-0" href="{% url 'store_chart' item.pk %}"><i class="material-icons text-sm me-2">trending_up</i>Sell-Chart</a>
                       </td>
                     </tr>
                     {% endfor %}

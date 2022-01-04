@@ -6,9 +6,14 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Store, Product, Basket, BasketItem
 from django.http import Http404
-from django.db.models import Q
+from django.db.models.functions import TruncMonth
+from django.db.models import Q, Avg, Count
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
+from django.utils.safestring import mark_safe
+import json
+
+
 
 User = get_user_model()
 
@@ -165,12 +170,18 @@ class UpdateMyStatus(UpdateView):
     
 class ChartView(View):
 
-    
+
 
     def get(self, request, *args, **kwargs):
-            return render(
-        request, "seller_dashboard/chart.html",{"post":123}
-    )
+        store_id = self.kwargs['pk']
+        # sells = Basket.objects.filter(Q(store__owner=seller)&Q(status="con")).aggregate(Avg('total_price'))
+        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="con")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')                    
+        month=[]
+        month_sell=[]
+        for item in sells:
+                month.append(item['month'].strftime('%B'))
+                month_sell.append(item['order_count'])
+        return render(request, "seller_dashboard/chart.html",{"months":month,"order_count":month_sell})
 
     
 

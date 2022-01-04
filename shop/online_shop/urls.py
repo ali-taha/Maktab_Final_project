@@ -16,7 +16,7 @@ urlpatterns = [
     path('basket_update/<pk>',UpdateMyStatus.as_view(), name='basket_update'),
 
 
-    path('chart',ChartView.as_view(), name='chart'),
+    path('chart/<pk>',ChartView.as_view(), name='store_chart'),
 
 
 ]
