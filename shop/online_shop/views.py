@@ -26,8 +26,8 @@ class SellerStoreList(ListView):
         queryset = Store.alive.filter(owner=self.request.user)
         return queryset        
 
-
 class CreateStore(FormView):
+      login_required = True
       template_name = "seller_dashboard/create_store.html"  
       form_class = CreateStoreForm 
 
