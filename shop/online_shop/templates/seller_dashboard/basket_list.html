@@ -1,5 +1,7 @@
 {% extends "shop/main_shop_dashboard.html" %}
 {% load static %}
+{% load widget_tweaks %}
+
 
 {% block title_1 %}Basket List{% endblock title_1 %}
 {% block title_2 %}Basket List{% endblock title_2 %}
@@ -22,6 +24,11 @@
                   {{filter.form}}
                   <button type="sumbit" class="btn btn-link text-dark px-3 mb-0 changer" ><i class="material-icons text-sm me-2">filter_alt</i>Filter</button>
                 </form>
+              </div>
+
+              <div>
+                start: <input type="month" id="start" name="start"min="2021-03" value="2018-05">
+                end: <input type="month" id="end" name="start"min="2021-03" value="2018-05">
               </div>
 
               <div class="table-responsive p-0">

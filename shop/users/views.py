@@ -47,7 +47,8 @@ class SignInSeller(FormView):
             return super().form_valid(form)  
 
     def get_success_url(self):
-        return reverse('dashboard')
+        id = self.request.user.id
+        return reverse('dashboard',)
 
 class LogoutView(View):
     def get(self, request):

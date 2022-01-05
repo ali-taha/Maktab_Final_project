@@ -90,6 +90,14 @@ class DeleteStore(DeleteView):
             raise Http404
         return obj   
 
+class SellerProductList(ListView):
+    template_name = 'seller_dashboard/product_list.html'
+    paginate_by = 100
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = Product.objects.filter(store__owner=self.request.user)
+        return queryset        
+
 
 class AddProduct(FormView):
     template_name = "seller_dashboard/add_product.html"        
@@ -160,12 +168,30 @@ class BasketDetail(ListView):
         context['basket'] = Basket.objects.get(id=self.kwargs['pk'])
         return context  
 
-class UpdateMyStatus(UpdateView):
+class UpdateBasketStatus(UpdateView):
     model = Basket
     form_class = UpdateBasketForm
 
     def get_success_url(self):
-        return reverse('store_list')                  
+        return reverse('store_list') 
+
+class SellerProfile(DetailView):
+    template_name = 'seller_dashboard/profile.html'
+    model = User    
+
+
+# class SearchView(ListView):
+#     template_name = "post/search.html"
+#     context_object_name = "posts"
+
+#     def get_queryset(self):
+#         queryset = Basket.objects.all()
+#         q = self.request.GET.get("q")
+#         if q:
+#             queryset = queryset.filter(
+#                 Q(title__contains=q) | Q(description__contains=q)
+#             )
+#         return queryset                         
         
     
 class ChartView(View):
@@ -179,14 +205,3 @@ class ChartView(View):
                 month.append(item['month'].strftime('%B'))
                 month_sell.append(item['order_count'])
         return render(request, "seller_dashboard/chart.html",{"months":month,"order_count":month_sell})
-
-    
-
-         
-            
-
-class TemplateView4(TemplateView):
-    template_name = "seller_dashboard/profile.html" 
-
-class TemplateView(TemplateView):
-    template_name = "shop/main_shop_dashboard.html"
