@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from random import randint
+import datetime
 
 
 User = get_user_model()
@@ -45,6 +46,10 @@ class StoreType(models.Model):
     def __str__(self):
         return self.title
 
+class ExcludeDeletedStores(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(status=DEL)
+      
 REV = 'rev'
 CON = 'con'
 DEL = 'del'
@@ -65,8 +70,16 @@ class Store(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
+    objects = models.Manager()
+    alive = ExcludeDeletedStores()
+
     def __str__(self):
         return self.title
+
+    def delete(self):
+        self.status = DEL
+        self.save()
+        pass    
 
 class Product(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
@@ -115,6 +128,8 @@ class Basket(models.Model):
     total_price = models.IntegerField(default=0)
     count_items = models.IntegerField(default=0)
     status = models.CharField(max_length=3,choices=BASKET_STATUS_CHOICES,default=REV)
+    created_on = models.DateTimeField(auto_now_add=True , null=True)
+    updated_on = models.DateTimeField(auto_now=True , null=True)
     paid_on = models.DateTimeField(null=True,blank=True)
 
     class Meta:

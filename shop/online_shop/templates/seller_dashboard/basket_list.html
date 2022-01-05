@@ -1,0 +1,143 @@
+{% extends "shop/main_shop_dashboard.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block title_1 %}Basket List{% endblock title_1 %}
+{% block title_2 %}Basket List{% endblock title_2 %}
+
+{% block main_content %}
+
+<div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">Baskets Of "{{store}}"</h6>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              
+
+              <div>
+                <form method="get">
+                  {{filter.form}}
+                  <button type="sumbit" class="btn btn-link text-dark px-3 mb-0 changer" ><i class="material-icons text-sm me-2">filter_alt</i>Filter</button>
+                </form>
+              </div>
+
+
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Store</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Owner</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Price</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created Time</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Updated On</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Change Status</th>
+
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item  in filter.qs %}
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{item.store}}</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.owner}}</p>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-success">{{item.get_status_display}}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{item.total_price}} T</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{item.created_on}}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{item.updated_on}}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <!-- action="{% url 'basket_update' item.id %}" use ajax -->
+                        <form method="post" id="editForm" item-id={{item.id}} >
+                          {% csrf_token %}
+                          {{form.as_p}}
+                          <button type="button" class="btn btn-link text-dark px-3 mb-0 changer" ><i class="material-icons text-sm me-2">edit</i>Save</button>
+                        </form>
+                      </td>
+                      <td class="align-middle ">
+                        <a class="btn btn-link text-dark px-3 mb-0" href="{% url 'basket_detail' item.pk %}"><i class="material-icons text-sm me-2">receipt</i>Detail</a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>  
+
+            </div>
+          </div>
+        </div>
+
+        {% endblock main_content %}
+
+          {% block extra_script %}
+          
+          <script>
+
+            
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                 for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+               // Does this cookie string begin with the name we want?
+                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+             }
+           }
+        }
+             return cookieValue;
+          }
+          const csrftoken = getCookie('csrftoken');
+
+            function refreshPage() {
+                location.reload(true);}
+
+
+            $(".changer").on("click",function () {
+              var status = $(this).siblings("p").find("#id_status").val();
+              var id =  $(this).parent("form").attr("item-id");
+              $.ajax({                      
+                url: `basket-update/${id}`,  
+                type : "POST",  
+                headers: {'X-CSRFToken': csrftoken},               
+                data: {
+                  'status': status       
+                }
+
+              });
+
+        
+            });
+            // $(document).ajaxStop(function(){
+            //         window.location.reload();
+            //   });
+          </script>
+
+
+          {% endblock extra_script %}
+
+
+

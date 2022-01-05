@@ -100,15 +100,6 @@ class SearchView(ListView):
             )
         return queryset
 
-
-class TemplateView(TemplateView):
-    template_name = "main.html"
-
-
-class PostView(TemplateView):
-    template_name = "post.html"
-
-
 """                Forms                       """
 
 

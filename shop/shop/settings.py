@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
+    'django_filters',
     'users',
     'blog',
     'online_shop',
@@ -117,6 +119,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+LOGIN_URL = '/sign-in'
 
 
 # Static files (CSS, JavaScript, Images)

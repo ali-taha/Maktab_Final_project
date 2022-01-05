@@ -12,10 +12,11 @@ class CustomUserAdmin(admin.ModelAdmin):
 
     @admin.display(empty_value='EMPTY', description='image')
     def view_avatar(self, obj):
-         return format_html(
-            '<image src="{}" width=70 height=50>',
-            obj.user_avatar.url,
-        )
+         if obj.user_avatar:
+            return format_html(
+             '<image src="{}" width=70 height=50>',
+                obj.user_avatar.url,
+         )
     view_avatar.short_description = 'Avatar'    
 
 admin.site.register(CustomUser,CustomUserAdmin)

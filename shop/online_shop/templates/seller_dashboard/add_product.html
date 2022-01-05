@@ -1,0 +1,48 @@
+{% extends "shop/main_shop_dashboard.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title_1 %}Add Product{% endblock title_1 %}
+{% block title_2 %}Add Product{% endblock title_2 %}
+
+
+{% block main_content %}
+      
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">Create New Store</h6>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+
+              <!-- Add Product -->
+              <form method="post" action="{% url 'add_product' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+            
+                {% for hidden in form.hidden_fields %}
+                  {{ hidden }}
+                {% endfor %}
+            
+                {% for field in form.visible_fields %}
+                  <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    {% for error in field.errors %}
+                      <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% endfor %}
+                <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Create</button>
+                  </form>
+                  <!-- End Add Product -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      {% endblock main_content %}
