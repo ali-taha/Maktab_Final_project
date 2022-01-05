@@ -13,12 +13,11 @@ urlpatterns = [
     path('add-product',login_required(AddProduct.as_view()), name='add_product'),
     path('basket-list/<pk>',login_required(StoreBasketList.as_view()), name='basket_list'),
     path('basket-detail/<pk>',login_required(BasketDetail.as_view()), name='basket_detail'),
-    path('basket_update/<pk>',login_required(UpdateBasketStatus.as_view()), name='basket_update'),
+    path('basket-list/basket-update/<pk>',login_required(UpdateBasketStatus.as_view()), name='basket_update'),
 
     path('profile/<pk>',login_required(SellerProfile.as_view()), name='profile'),
     path('edit-product/<pk>',login_required(EditProduct.as_view()), name='edit_product'),
     path('delete-product/<pk>',login_required(DeleteProduct.as_view()), name='delete_product'),
-
 
 
     path('chart/<pk>',login_required(ChartView.as_view()), name='store_chart'),
