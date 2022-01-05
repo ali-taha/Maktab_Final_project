@@ -130,13 +130,15 @@
                 headers: {'X-CSRFToken': csrftoken},               
                 data: {
                   'status': status       
-                },
-            error: function (xml) {
-            setInterval('refreshPage()', 5000);
-        }
+                }
+
               });
         
             });
+
+            $(document).ajaxStop(function(){
+                    window.location.reload();
+              });
           </script>
 
 

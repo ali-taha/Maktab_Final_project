@@ -183,7 +183,7 @@ class UpdateBasketStatus(UpdateView):
     form_class = UpdateBasketForm
 
     def get_success_url(self):
-        return reverse('basket_list') 
+        return HttpResponse(status=200) 
 
 
 class SellerProfile(DetailView):
