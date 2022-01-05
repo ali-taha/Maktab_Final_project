@@ -189,21 +189,7 @@ class UpdateBasketStatus(UpdateView):
 class SellerProfile(DetailView):
     template_name = 'seller_dashboard/profile.html'
     model = User    
-
-
-# class SearchView(ListView):
-#     template_name = "post/search.html"
-#     context_object_name = "posts"
-
-#     def get_queryset(self):
-#         queryset = Basket.objects.all()
-#         q = self.request.GET.get("q")
-#         if q:
-#             queryset = queryset.filter(
-#                 Q(title__contains=q) | Q(description__contains=q)
-#             )
-#         return queryset                         
-        
+                         
     
 class ChartView(View):
 

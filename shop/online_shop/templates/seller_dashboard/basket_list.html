@@ -26,10 +26,6 @@
                 </form>
               </div>
 
-              <div>
-                start: <input type="month" id="start" name="start"min="2021-03" value="2018-05">
-                end: <input type="month" id="end" name="start"min="2021-03" value="2018-05">
-              </div>
 
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
@@ -123,7 +119,6 @@
             $(".changer").on("click",function () {
               var status = $(this).siblings("p").find("#id_status").val();
               var id =  $(this).parent("form").attr("item-id");
-              console.log(status); 
               $.ajax({                      
                 url: `basket-update/${id}`,  
                 type : "POST",  
@@ -133,12 +128,12 @@
                 }
 
               });
+
         
             });
-
-            $(document).ajaxStop(function(){
-                    window.location.reload();
-              });
+            // $(document).ajaxStop(function(){
+            //         window.location.reload();
+            //   });
           </script>
 
 
