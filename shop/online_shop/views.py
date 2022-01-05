@@ -146,12 +146,6 @@ class DeleteProduct(DeleteView):
             raise Http404
         return obj       
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     self.object.status = 'rev'
-    #     self.object.save()
-    #     return super().post(request, *args, **kwargs)         
-
     
 class StoreBasketList(FormMixin,ListView):
     template_name = 'seller_dashboard/basket_list.html'
@@ -170,27 +164,6 @@ class StoreBasketList(FormMixin,ListView):
         context["filter"] = BasketListFilter(self.request.GET, queryset=self.get_queryset())
         return  context
 
-    # def get_context_data(self,*args, **kwargs):
-    #     context = super(StoreBasketList, self).get_context_data(*args,**kwargs)
-    #     context['store'] = Store.objects.get(id=self.kwargs['pk'])
-    #     return context    
-
-    # def get_queryset(self, *args, **kwargs):
-    #     store = Store.objects.get(id=self.kwargs['pk'])
-    #     queryset = Basket.objects.filter(store = store)
-    #     return queryset
-
-    # def post(self, request, *args, **kwargs):
-    #     form = self.get_form()
-    #     if form.is_valid():
-    #         id=self.kwargs['pk'] 
-    #         status = form.cleaned_data['status']
-    #         obj = Basket.objects.get(id=id)
-    #         obj.status = status
-    #         obj.save()
-    #         return self.form_valid(form)
-    #     else:
-    #         return self.form_invalid(form)
 
 class BasketDetail(ListView):
     template_name = 'seller_dashboard/basket_detail.html'
@@ -210,7 +183,7 @@ class UpdateBasketStatus(UpdateView):
     form_class = UpdateBasketForm
 
     def get_success_url(self):
-        return reverse('store_list') 
+        return reverse('basket_list' ,args=[self.pk]) 
 
 
 class SellerProfile(DetailView):
