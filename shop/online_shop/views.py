@@ -12,10 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 from .filter import BasketListFilter
 
-
-
 User = get_user_model()
-
 
 
 class SellerStoreList(ListView):
@@ -115,6 +112,29 @@ class AddProduct(FormView):
 
     def get_success_url(self):
         return reverse('store_list')     
+
+
+class EditProduct(UpdateView):
+    template_name = 'seller_dashboard/edit_product.html'  
+    model = Product
+
+    fields = ["store", "category", "title", "tag","stock", "image", "description", "price"]
+
+    def get_object(self, queryset=None):
+        """ Hook to ensure object is owned by request.user. """
+        obj = super(UpdateView, self).get_object()
+        if not obj.store.owner == self.request.user:
+            raise Http404
+        return obj         
+
+    def get_success_url(self):
+        return reverse('product_list')   
+
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     self.object.status = 'rev'
+    #     self.object.save()
+    #     return super().post(request, *args, **kwargs)         
 
     
 class StoreBasketList(FormMixin,ListView):

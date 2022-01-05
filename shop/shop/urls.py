@@ -20,8 +20,8 @@ from django.conf.urls.static import static
 from users.views import SignUpSeller, SignInSeller, LogoutView
 
 urlpatterns = [
+    path('',SignInSeller.as_view(), name='sign_in'),
     path('admin/', admin.site.urls),
-    path('sign-in',SignInSeller.as_view(), name='sign_in'),
     path('sign-up',SignUpSeller.as_view() , name='sign_up'),
     path('logout',LogoutView.as_view() , name='logout_view'),
     path('blog/',include('blog.urls')),

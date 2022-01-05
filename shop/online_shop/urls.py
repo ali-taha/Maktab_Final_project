@@ -16,10 +16,11 @@ urlpatterns = [
     path('basket_update/<pk>',login_required(UpdateBasketStatus.as_view()), name='basket_update'),
 
     path('profile/<pk>',login_required(SellerProfile.as_view()), name='profile'),
-
+    path('edit-product/<pk>',login_required(EditProduct.as_view()), name='edit_product'),
 
 
     path('chart/<pk>',login_required(ChartView.as_view()), name='store_chart'),
+    
     # path("search", SearchView.as_view(), name="search"),
 
 
