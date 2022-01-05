@@ -5,5 +5,5 @@ class BasketListFilter(django_filters.FilterSet):
     class Meta:
         model = Basket
         fields = {
-            'status': ['exact'],
+            'status',
         }
