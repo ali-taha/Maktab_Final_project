@@ -87,6 +87,7 @@ class DeleteStore(DeleteView):
             raise Http404
         return obj   
 
+
 class SellerProductList(ListView):
     template_name = 'seller_dashboard/product_list.html'
     paginate_by = 100
@@ -129,6 +130,21 @@ class EditProduct(UpdateView):
 
     def get_success_url(self):
         return reverse('product_list')   
+
+
+class DeleteProduct(DeleteView):
+    template_name = 'seller_dashboard/delete_product.html' 
+    model = Product
+
+    def get_success_url(self):
+        return reverse('product_list')
+
+    def get_object(self, queryset=None):
+        """ Hook to ensure object is owned by request.user. """
+        obj = super(DeleteView, self).get_object()
+        if not obj.store.owner == self.request.user:
+            raise Http404
+        return obj       
 
     # def post(self, request, *args, **kwargs):
     #     self.object = self.get_object()
@@ -188,12 +204,14 @@ class BasketDetail(ListView):
         context['basket'] = Basket.objects.get(id=self.kwargs['pk'])
         return context  
 
+
 class UpdateBasketStatus(UpdateView):
     model = Basket
     form_class = UpdateBasketForm
 
     def get_success_url(self):
         return reverse('store_list') 
+
 
 class SellerProfile(DetailView):
     template_name = 'seller_dashboard/profile.html'

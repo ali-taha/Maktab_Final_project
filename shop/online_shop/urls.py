@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('profile/<pk>',login_required(SellerProfile.as_view()), name='profile'),
     path('edit-product/<pk>',login_required(EditProduct.as_view()), name='edit_product'),
+    path('delete-product/<pk>',login_required(DeleteProduct.as_view()), name='delete_product'),
+
 
 
     path('chart/<pk>',login_required(ChartView.as_view()), name='store_chart'),
