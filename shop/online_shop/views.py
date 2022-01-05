@@ -10,8 +10,7 @@ from django.db.models.functions import TruncMonth
 from django.db.models import Q, Avg, Count
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
-from django.utils.safestring import mark_safe
-import json
+from .filter import BasketListFilter
 
 
 
@@ -115,16 +114,17 @@ class StoreBasketList(FormMixin,ListView):
     paginate_by = 100
     form_class = UpdateBasketForm
 
-
     def get_queryset(self):
-        store = Store.objects.get(id=self.kwargs['pk'])
-        queryset = Basket.objects.filter(store = store)
-        return queryset   
+            store = Store.objects.get(id=self.kwargs['pk'])
+            queryset = Basket.objects.filter(store = store)
+            return queryset   
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(StoreBasketList, self).get_context_data(**kwargs)
-    #     context["form"] = self.get_form()
-    #     return context    
+    def get_context_data(self, **kwargs):
+        context = super(StoreBasketList, self).get_context_data(**kwargs)
+        # context["form"] = self.get_form()
+        context["pk"] = self.kwargs['pk']
+        context["filter"] = BasketListFilter(self.request.GET, queryset=self.get_queryset())
+        return  context
 
     # def get_context_data(self,*args, **kwargs):
     #     context = super(StoreBasketList, self).get_context_data(*args,**kwargs)
@@ -165,14 +165,14 @@ class UpdateMyStatus(UpdateView):
     form_class = UpdateBasketForm
 
     def get_success_url(self):
-        return reverse('store_list')           
+        return reverse('store_list')                  
         
     
 class ChartView(View):
 
     def get(self, request, *args, **kwargs):
         store_id = self.kwargs['pk']
-        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="con")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')                    
+        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')                    
         month=[]
         month_sell=[]
         for item in sells:

@@ -15,6 +15,22 @@
               </div>
             </div>
             <div class="card-body px-0 pb-2">
+              
+              <div>
+              <form method="get">
+                {% csrf_token %}
+                {{filter.form}}
+                <button type="sumbit" class="btn btn-link text-dark px-3 mb-0 changer" ><i class="material-icons text-sm me-2">edit</i>Filter</button>
+              </form>
+            </div>
+            {% if filter.qs %}
+                {% for item in filter.qs %}
+            <li>{{ item.store }}</li>{% endfor %}
+            {% else %}
+          
+            {% endif %}
+
+
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
                   <thead>
