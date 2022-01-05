@@ -122,7 +122,7 @@ class StoreBasketList(FormMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super(StoreBasketList, self).get_context_data(**kwargs)
         # context["form"] = self.get_form()
-        context["pk"] = self.kwargs['pk']
+        context["store"] = Store.objects.get(id=self.kwargs['pk'])
         context["filter"] = BasketListFilter(self.request.GET, queryset=self.get_queryset())
         return  context
 
