@@ -1815,7 +1815,7 @@ progress {
   color: #495057;
   background-color: transparent;
   background-clip: padding-box;
-  border: 1px solid #d2d6da;
+  border: 1px solid #d2d6da !important;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -17530,5 +17530,6 @@ pre[class*="language-"] {
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   .ps {
     overflow: auto !important; } }
+
 
 /*# sourceMappingURL=material-dashboard.css.map */

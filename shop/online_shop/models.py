@@ -32,6 +32,9 @@ class ProductTag(models.Model):
             self.slug = slugify(self.title)
         super(ProductTag, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.title    
+
 
 class StoreType(models.Model):
     title = models.CharField(max_length=50) 
