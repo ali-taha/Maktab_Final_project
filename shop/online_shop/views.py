@@ -7,10 +7,12 @@ from django.contrib import messages
 from .models import Store, Product, Basket, BasketItem
 from django.http import Http404
 from django.db.models.functions import TruncMonth
-from django.db.models import Q, Avg, Count
+from django.db.models import Q, Avg, Count, Sum
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 from .filter import BasketListFilter
+from django.db.models import OuterRef, Subquery
+
 
 User = get_user_model()
 
@@ -190,15 +192,25 @@ class SellerProfile(DetailView):
     template_name = 'seller_dashboard/profile.html'
     model = User    
                          
-    
+class BuyersList(ListView):
+    template_name = 'seller_dashboard/buyers_list.html'
+  
+
+    def get_queryset(self, *args, **kwargs):
+        latest_buy = Subquery(Basket.objects.filter(owner_id=OuterRef("owner")).order_by("updated_on").values('updated_on')[:1])
+        queryset = Basket.objects.filter(Q(store__owner=self.request.user)&Q(status='pai')).values('owner__username').order_by('owner').annotate(totalb=Count('owner')).annotate(totalp=Sum('total_price')).annotate(totali=Sum('count_items')).annotate(lastbuy=latest_buy)
+        return queryset      
+
 class ChartView(View):
 
     def get(self, request, *args, **kwargs):
         store_id = self.kwargs['pk']
-        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')                    
-        month=[]
+        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')     
+        months=[]
         month_sell=[]
         for item in sells:
-                month.append(item['month'].strftime('%B'))
+                months.append(item['month'].strftime('%B'))
                 month_sell.append(item['order_count'])
-        return render(request, "seller_dashboard/chart.html",{"months":month,"order_count":month_sell})
+        return render(request, "seller_dashboard/chart.html",{"months":months,"order_count":month_sell})
+
+

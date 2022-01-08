@@ -17,6 +17,8 @@ urlpatterns = [
     path('basket-list/basket-update/<pk>',login_required(UpdateBasketStatus.as_view()), name='basket_update'),
     path('basket-detail/<pk>',login_required(BasketDetail.as_view()), name='basket_detail'),
     path('profile/<pk>',login_required(SellerProfile.as_view()), name='profile'),
+    path('buyers-list',login_required(BuyersList.as_view()), name='buyers_list'),
+
 
     path('chart/<pk>',login_required(ChartView.as_view()), name='store_chart'),
     

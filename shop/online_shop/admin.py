@@ -16,7 +16,7 @@ def make_review(modeladmin, request, queryset):
     queryset.update(status='rev')  
 
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('title','owner','status','created_on','type')
+    list_display = ('title','owner','status','created_on','type','id')
     list_filter = ('status','created_on','type')
     search_fields = ('title',)
     date_hierarchy = 'created_on'
