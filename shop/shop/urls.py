@@ -47,8 +47,8 @@ urlpatterns = [
     path('dashboard/',include('online_shop.urls')),
 
     path('api/sign-up',SignUpApi.as_view(), name='sign_up_api'),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/sign-in/', TokenObtainPairView.as_view(), name='sign_in_api'),
+    path('api/sign-in/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
