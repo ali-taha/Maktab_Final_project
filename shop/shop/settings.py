@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'django_filters',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'users',
     'blog',
     'online_shop',
@@ -150,3 +152,10 @@ EMAIL_HOST_USER = 'adtotaly@gmail.com'
 EMAIL_HOST_PASSWORD = '****'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}

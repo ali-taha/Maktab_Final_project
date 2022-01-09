@@ -17,15 +17,20 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import SignUpSeller, SignInSeller, LogoutView
+from users.views import SignUpSeller, SignInSeller, LogoutView, SignUpApi
+from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
+
 
 urlpatterns = [
     path('',SignInSeller.as_view(), name='sign_in'),
-    path('admin/', admin.site.urls),
     path('sign-up',SignUpSeller.as_view() , name='sign_up'),
     path('logout',LogoutView.as_view() , name='logout_view'),
+    path('admin/', admin.site.urls),
     path('blog/',include('blog.urls')),
     path('dashboard/',include('online_shop.urls')),
+    path('api/sign-up',SignUpApi.as_view(), name='test_api'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = 'Shop Admin'

@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
-
+from rest_framework import status, generics, mixins, viewsets
+from .serializers import UserSerializer
 
 User = get_user_model()
 
@@ -53,4 +54,27 @@ class SignInSeller(FormView):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect(reverse('sign_in'))        
+        return redirect(reverse('sign_in'))
+
+
+"""                API  Views                        """       
+
+class SignUpApi(generics.ListCreateAPIView, mixins.ListModelMixin,mixins.CreateModelMixin):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get(self,request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    
+    def post(self,request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)    
+
+
+
+
+
+   
+
+

@@ -214,3 +214,11 @@ class ChartView(View):
         return render(request, "seller_dashboard/chart.html",{"months":months,"order_count":month_sell})
 
 
+
+    """                API  Views                        """
+
+
+
+
+
+
