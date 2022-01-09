@@ -2,6 +2,7 @@ from django.views.generic.edit import FormView
 from django.views.generic import View
 from .forms import RegisterSeller, SelllerLoginForm
 from django.contrib.auth import authenticate, login, get_user_model, logout
+from rest_framework.permissions import IsAuthenticated
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import (
@@ -13,7 +14,7 @@ from django.shortcuts import (
 )
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer
+from .serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer
 
 User = get_user_model()
 
@@ -88,3 +89,21 @@ class SignUpApi(generics.CreateAPIView):
             status=status.HTTP_201_CREATED,
             headers=headers,
         )
+
+class ProfileApi(generics.RetrieveUpdateAPIView):
+
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "username"
+    lookup_field_kwargs ="username"
+
+    def get_queryset(self):
+            return User.objects.filter(id=self.request.user.id) 
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return UserDetailSerializer
+        elif self.request.method == "PUT":
+            return UserUpdateSerializer           
+
+
+

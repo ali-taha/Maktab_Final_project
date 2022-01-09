@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path,include,re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import SignUpSeller, SignInSeller, LogoutView, SignUpApi
+from users.views import SignUpSeller, SignInSeller, LogoutView, SignUpApi, ProfileApi
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -49,6 +49,8 @@ urlpatterns = [
     path('api/sign-up',SignUpApi.as_view(), name='sign_up_api'),
     path('api/sign-in/', TokenObtainPairView.as_view(), name='sign_in_api'),
     path('api/sign-in/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/profile/<username>',ProfileApi.as_view(), name='profile_api'),
+
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
