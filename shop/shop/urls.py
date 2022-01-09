@@ -28,9 +28,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/',include('blog.urls')),
     path('dashboard/',include('online_shop.urls')),
-    path('api/sign-up',SignUpApi.as_view(), name='test_api'),
+
+    path('api/sign-up',SignUpApi.as_view(), name='sign_up_api'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = 'Shop Admin'

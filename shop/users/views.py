@@ -6,7 +6,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 from rest_framework import status, generics, mixins, viewsets
-from .serializers import UserSerializer
+from rest_framework.response import Response
+from .serializers import UserSignUpSerializer
 
 User = get_user_model()
 
@@ -62,14 +63,20 @@ class LogoutView(View):
 class SignUpApi(generics.ListCreateAPIView, mixins.ListModelMixin,mixins.CreateModelMixin):
 
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSignUpSerializer
 
     def get(self,request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    
     def post(self,request, *args, **kwargs):
         return self.create(request, *args, **kwargs)    
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(data={"msg":"User successfully created"}, status=status.HTTP_201_CREATED, headers=headers)    
 
 
 
