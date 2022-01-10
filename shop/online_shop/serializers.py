@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Store, StoreType, Product, Basket
+from .models import Store, StoreType, Product, Basket, BasketItem
 
 User = get_user_model()
 
@@ -30,6 +30,12 @@ class ProductListSerializer(serializers.ModelSerializer):
 class CreateBasketSerializer(serializers.ModelSerializer):
     class Meta:
         model= Basket
-        fields = []          
+        fields = []
+
+class CreateBasketItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= BasketItem
+        fields = ['basket','product','count'] 
+
 
  

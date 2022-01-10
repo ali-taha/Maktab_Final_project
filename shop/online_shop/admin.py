@@ -37,7 +37,7 @@ def custom_titled_filter(title):
     return Wrapper
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title','store','get_owner','stock','price', 'view_image','category')
+    list_display = ('id','title','store','get_owner','stock','price', 'view_image','category')
     list_filter = (('category__title', custom_titled_filter('Category')),)
     search_fields = ('title',)
     empty_value_display = '-empty-'

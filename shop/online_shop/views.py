@@ -15,7 +15,7 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
 
 
@@ -279,7 +279,38 @@ class BasketCreateApi(generics.CreateAPIView):
     def perform_create(self, serializer, product, store):
         basket  = serializer.save(owner=self.request.user,store=store)
         BasketItem.objects.create(basket=basket,product=product,count=1)
-        return serializer.save(owner=self.request.user,store=store)                
+        return serializer.save(owner=self.request.user,store=store)  
+
+
+class BasketAddItemApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset =BasketItem.objects.all()
+    serializer_class = CreateBasketItemSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        basket = serializer.validated_data['basket']
+        product = serializer.validated_data['product']
+        if basket.store == product.store:
+            basket_item = self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                    data={"Basket Item Successfully added": f"{basket_item.id}"},
+                    status=status.HTTP_201_CREATED,
+                    headers=headers,
+                )
+        else:
+            return Response(
+                data={"msg": " You Can't By From Some Stores in a Basket "},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+    def perform_create(self, serializer):
+        return serializer.save()                        
 
 
 
