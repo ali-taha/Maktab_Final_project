@@ -12,6 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 from .filter import BasketListFilter
 from django.db.models import OuterRef, Subquery
+from rest_framework import status, generics, mixins, viewsets
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import StoreListSerializer
+from .filter import StoreListFilter
 
 
 User = get_user_model()
@@ -217,6 +222,15 @@ class ChartView(View):
 
     """                API  Views                        """
 
+class StoreListApi(generics.ListAPIView):
+    filterset_class = StoreListFilter
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = StoreListSerializer
+
+    def get_queryset(self):
+        if self.request.method == "GET":
+            return Store.alive.filter(status='con')
 
 
 
