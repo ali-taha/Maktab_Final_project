@@ -15,7 +15,7 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
 
 
@@ -250,7 +250,36 @@ class ProductListApi(generics.ListAPIView):
 
     def get_queryset(self):
         if self.request.method == "GET":
-            return Product.available.filter(store__id=self.kwargs.get('store'))                    
+            return Product.available.filter(store__id=self.kwargs.get('store'))     
+
+
+class BasketCreateApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset =Product.objects.all()
+    serializer_class = CreateBasketSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        product_id  = self.kwargs.get('product')
+        product = Product.objects.get(id=product_id)
+        store = product.store 
+        basket = self.perform_create(serializer, product, store)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            data={"basket_id": f"{basket.id}"},
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )               
+
+    def perform_create(self, serializer, product, store):
+        basket  = serializer.save(owner=self.request.user,store=store)
+        BasketItem.objects.create(basket=basket,product=product,count=1)
+        return serializer.save(owner=self.request.user,store=store)                
 
 
 
