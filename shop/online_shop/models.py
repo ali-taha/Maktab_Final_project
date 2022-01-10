@@ -84,6 +84,12 @@ class Store(models.Model):
         self.save()
         pass    
 
+
+class AvailableProduct(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(stock=0)
+
+
 class Product(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
@@ -97,6 +103,9 @@ class Product(models.Model):
     price = models.IntegerField(default=0)
     like = models.IntegerField(default=0)
     slug = models.SlugField()
+
+    objects = models.Manager()
+    available = AvailableProduct()
 
     def __str__(self):
         return self.title

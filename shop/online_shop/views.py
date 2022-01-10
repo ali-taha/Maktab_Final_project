@@ -15,8 +15,8 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer
-from .filter import StoreListFilter, StoreTypeFilter
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer
+from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
 
 
 User = get_user_model()
@@ -222,6 +222,7 @@ class ChartView(View):
 
     """                API  Views                        """
 
+
 class StoreListApi(generics.ListAPIView):
     filterset_class = StoreListFilter
     permission_classes = (IsAuthenticated,)
@@ -231,15 +232,25 @@ class StoreListApi(generics.ListAPIView):
         if self.request.method == "GET":
             return Store.alive.filter(status='con')
 
+
 class StoreTypeListApi(generics.ListAPIView):
     filterset_class = StoreTypeFilter
-
     permission_classes = (IsAuthenticated,)
     serializer_class = StoreTypeListSerializer
 
     def get_queryset(self):
         if self.request.method == "GET":
-            return StoreType.objects.all()            
+            return StoreType.objects.all()    
+
+
+class ProductListApi(generics.ListAPIView):
+    filterset_class = ProductListFilter
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProductListSerializer
+
+    def get_queryset(self):
+        if self.request.method == "GET":
+            return Product.available.filter(store__id=self.kwargs.get('store'))                    
 
 
 
