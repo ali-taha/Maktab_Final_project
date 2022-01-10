@@ -12,6 +12,9 @@ class ProductCategory(models.Model):
     title = models.CharField(max_length=50,unique=True)
     description = models.TextField()
     slug = models.SlugField(unique=True)
+    
+    class Meta:
+        ordering = ['title']
 
 
     def save(self, *args, **kwargs):
@@ -26,6 +29,9 @@ class ProductTag(models.Model):
     title = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        ordering = ['title']
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -39,6 +45,9 @@ class ProductTag(models.Model):
 class StoreType(models.Model):
     title = models.CharField(max_length=50) 
     slug = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ['title']
 
 
     def save(self, *args, **kwargs):
@@ -75,6 +84,9 @@ class Store(models.Model):
 
     objects = models.Manager()
     alive = ExcludeDeletedStores()
+
+    class Meta:
+        ordering = ['pk']
 
     def __str__(self):
         return self.title
@@ -122,6 +134,9 @@ class Product(models.Model):
             exists = qs.exists()
         return super(Product, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['pk']    
+
 
 CON = 'con'
 REV = 'rev'
@@ -145,7 +160,7 @@ class Basket(models.Model):
     paid_on = models.DateTimeField(null=True,blank=True)
 
     class Meta:
-        ordering = ['paid_on']
+        ordering = ['pk']
 
     def __str__(self):
         return str(self.id)    
@@ -156,6 +171,9 @@ class BasketItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
     buy_price = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['basket']
 
     def save(self, *args, **kwargs):
         price = self.product.price

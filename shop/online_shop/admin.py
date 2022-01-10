@@ -16,13 +16,14 @@ def make_review(modeladmin, request, queryset):
     queryset.update(status='rev')  
 
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('title','owner','status','created_on','type','id')
+    list_display = ('id','title','owner','status','created_on','type',)
     list_filter = ('status','created_on','type')
     search_fields = ('title',)
     date_hierarchy = 'created_on'
     list_editable = ('status',)
     actions = [make_confirmed, make_deleted, make_review]
     empty_value_display = '-empty-'
+    
 
 admin.site.register(Store,StoreAdmin) 
 
@@ -67,7 +68,7 @@ admin.site.register(Basket,BasketAdmin)
 
 
 class BasketItemAdmin(admin.ModelAdmin):
-    list_display = ('basket', 'product', 'count','buy_price')
+    list_display = ('basket', 'id', 'product', 'count','buy_price')
     search_fields = ('basket','product')
 
 admin.site.register(BasketItem,BasketItemAdmin)
