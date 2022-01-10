@@ -17,4 +17,9 @@ class StoreListSerializer(serializers.ModelSerializer):
         fields = ['title','type','type_name','owner','owner_name','status','description']
         lookup_field = 'title'
 
+class StoreTypeListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoreType
+        fields = "__all__"        
+
  

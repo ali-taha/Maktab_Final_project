@@ -17,8 +17,14 @@ class StoreListFilter(django_filters.FilterSet):
         model = Store
         fields = {
             'type':['exact',],
+        } 
 
-        }   
+class StoreTypeFilter(django_filters.FilterSet):
+    class Meta:
+        model = StoreType
+        fields = {
+            'title':['exact','icontains'],
+        }             
 
         
            

@@ -4,7 +4,7 @@ from .forms import CreateStoreForm, AddProductForm, UpdateBasketForm
 from django.contrib.auth import  get_user_model
 from django.urls import reverse
 from django.contrib import messages
-from .models import Store, Product, Basket, BasketItem
+from .models import Store, Product, Basket, BasketItem, StoreType
 from django.http import Http404
 from django.db.models.functions import TruncMonth
 from django.db.models import Q, Avg, Count, Sum
@@ -15,8 +15,8 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer
-from .filter import StoreListFilter
+from .serializers import StoreListSerializer, StoreTypeListSerializer
+from .filter import StoreListFilter, StoreTypeFilter
 
 
 User = get_user_model()
@@ -224,13 +224,22 @@ class ChartView(View):
 
 class StoreListApi(generics.ListAPIView):
     filterset_class = StoreListFilter
-
     permission_classes = (IsAuthenticated,)
     serializer_class = StoreListSerializer
 
     def get_queryset(self):
         if self.request.method == "GET":
             return Store.alive.filter(status='con')
+
+class StoreTypeListApi(generics.ListAPIView):
+    filterset_class = StoreTypeFilter
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = StoreTypeListSerializer
+
+    def get_queryset(self):
+        if self.request.method == "GET":
+            return StoreType.objects.all()            
 
 
 
