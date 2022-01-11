@@ -15,7 +15,7 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
 
 
@@ -323,6 +323,21 @@ class DeleteBasketItemApi(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+class PayBasketApi(generics.UpdateAPIView):
+
+    permission_classes = (IsAuthenticated,)
+    queryset =Basket.objects.all()
+    serializer_class = PayBasketerializer
+
+    lookup_field = "id"
+    lookup_field_kwargs ="id"
+    
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)        
                       
 
 
