@@ -15,7 +15,7 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
 
 
@@ -282,14 +282,14 @@ class BasketCreateApi(generics.CreateAPIView):
         return serializer.save(owner=self.request.user,store=store)  
 
 
-class BasketAddItemApi(generics.CreateAPIView):
+class AddBasketItemApi(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset =BasketItem.objects.all()
     serializer_class = CreateBasketItemSerializer
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
+  
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -310,7 +310,20 @@ class BasketAddItemApi(generics.CreateAPIView):
             )
 
     def perform_create(self, serializer):
-        return serializer.save()                        
+        return serializer.save()   
+
+class DeleteBasketItemApi(generics.DestroyAPIView):
+
+    permission_classes = (IsAuthenticated,)
+    queryset =BasketItem.objects.all()
+    serializer_class = DeleteBasketItemSerializer
+
+    lookup_field = "id"
+    lookup_field_kwargs ="id"
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+                      
 
 
 

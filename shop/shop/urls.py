@@ -18,7 +18,7 @@ from django.urls import path,include,re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from users.views import SignUpSeller, SignInSeller, LogoutView, SignUpApi, ProfileApi
-from online_shop.views import StoreListApi, StoreTypeListApi, ProductListApi, BasketCreateApi, BasketAddItemApi
+from online_shop.views import StoreListApi, StoreTypeListApi, ProductListApi, BasketCreateApi, AddBasketItemApi, DeleteBasketItemApi
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -56,7 +56,8 @@ urlpatterns = [
     path('api/store/type',StoreTypeListApi.as_view(), name='store_type_list_api'),
     path('api/<store>/product',ProductListApi.as_view(), name='product_list_api'),
     path('api/basket/<product>',BasketCreateApi.as_view(), name='basket_create_api'),
-    path('api/basket-item/',BasketAddItemApi.as_view(), name='basket_add_item_api'),
+    path('api/basket-item/',AddBasketItemApi.as_view(), name='basket_add_item_api'),
+    path('api/basket-item/<int:id>',DeleteBasketItemApi.as_view(), name='delete_add_item_api'),
 
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

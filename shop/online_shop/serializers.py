@@ -37,5 +37,10 @@ class CreateBasketItemSerializer(serializers.ModelSerializer):
         model= BasketItem
         fields = ['basket','product','count'] 
 
+class DeleteBasketItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= BasketItem
+        fields = ['id']         
+
 
  
