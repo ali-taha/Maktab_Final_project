@@ -190,11 +190,14 @@ class BasketItem(models.Model):
      basketitem = BasketItem.objects.get(id=self.id)
      price = self.product.price
      if basketitem:
-            self.basket.total_price -= (self.count * price)
-            self.basket.count_items -= self.count
-            self.basket.save()
             self.product.stock = self.product.stock + self.count
             self.product.save()
+            self.basket.total_price -= (self.count * price)
+            self.basket.count_items -= self.count
+            if self.basket.count_items == 0:
+                self.basket.delete()
+            else:    
+                self.basket.save()
      super(BasketItem, self).delete()    
 
  
