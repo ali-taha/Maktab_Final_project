@@ -30,22 +30,20 @@ class TestAPI(APITestCase):
         self.basket1 = Basket.objects.create(owner=self.user, store=self.store1, status='rev')
  
 
-        
      def test_user_sign_up(self):
         data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
         self.assertEqual(resp.status_code, 201)
 
-   #   def test_user_sgn_in(self):
-   #      data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
-   #      url = reverse("sign_up_api")
-   #      resp = self.client.post(url, data=data)
-   #      data = {"username": "testi", "password": "testi"}
-   #      url2 = reverse("sign_in_api")
-   #      resp2 = self.client.post(url2, data=data)
-   #      print(resp2.data)
-   #      self.assertEqual(resp2.status_code, 201)   
+     def test_user_sgn_in(self):
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        url = reverse("sign_up_api")
+        resp = self.client.post(url, data=data)
+        data = {"username": "testi", "password": "testi"}
+        url2 = reverse("sign_in_api")
+        resp2 = self.client.post(url2, data=data)
+        self.assertEqual(resp2.status_code, 200)   
 
      def test_user_profile(self):
          self.client.force_authenticate(self.user)
@@ -83,7 +81,6 @@ class TestAPI(APITestCase):
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.data.get('basket_id'), '3')
 
-
      def test_add_basket_item(self):
         self.client.force_authenticate(self.user)
         data = {"basket": f'{self.basket1}', "product": self.product1.id, "count":1}
@@ -106,13 +103,13 @@ class TestAPI(APITestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-     def test_pay_basket_api(self):
-         self.client.force_authenticate(self.user)
-         url= reverse("pay_basket_api", args=(f'{self.basket1.id}',))
-         resp = self.client.put(url)
-         # self.basket1.status = "con"
-         self.assertEqual(resp.status_code, 200)
-         print(self.basket1.status)
+   #   def test_pay_basket_api(self):
+   #       self.client.force_authenticate(self.user)
+   #       url= reverse("pay_basket_api", args=(f'{self.basket1.id}',))
+   #       resp = self.client.put(url)
+   #       # self.basket1.status = "con"
+   #       self.assertEqual(resp.status_code, 200)
+   #       print(self.basket1.status)
 
 
     
