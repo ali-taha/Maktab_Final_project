@@ -15,7 +15,7 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer, PaidBasketsSerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
 
 
@@ -336,9 +336,22 @@ class PayBasketApi(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        serializer.validated_data['status'] ='con'
+        serializer.save()    
+
     def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)        
-                      
+        return self.partial_update(request, *args, **kwargs)     
+
+
+class PaidBasketsApi(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PaidBasketsSerializer
+
+    def get_queryset(self):
+        if self.request.method == "GET":
+            return Basket.objects.filter(Q(owner=self.request.user)&Q(status='pai'))  
+
 
 
 

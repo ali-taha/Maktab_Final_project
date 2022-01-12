@@ -45,7 +45,13 @@ class DeleteBasketItemSerializer(serializers.ModelSerializer):
 class PayBasketerializer(serializers.ModelSerializer):
     class Meta:
         model= Basket
-        fields = ['status']               
+        fields = ['status']  
+
+
+class PaidBasketsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Basket
+        fields = "__all__"                     
 
 
  
