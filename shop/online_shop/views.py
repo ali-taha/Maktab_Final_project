@@ -329,7 +329,6 @@ class DeleteBasketItemApi(generics.DestroyAPIView):
 class PayBasketApi(generics.UpdateAPIView):
 
     permission_classes = (IsAuthenticated,)
-    queryset =Basket.objects.all()
     serializer_class = PayBasketerializer
 
     lookup_field = "id"
@@ -339,20 +338,24 @@ class PayBasketApi(generics.UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
     def perform_update(self, serializer):
-        serializer.validated_data['status'] ='con'
-        serializer.save()    
+        # serializer.validated_data['status'] ='pai'
+        serializer.save(status='pai')    
 
     def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)     
+        return self.partial_update(request, *args, **kwargs)  
+
+    def get_queryset(self):
+        if self.request.method == "PUT":
+            return Basket.objects.filter(owner=self.request.user)       
 
 
-class PaidBasketsApi(generics.ListAPIView):
+class ShowBasketsApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PaidBasketsSerializer
 
     def get_queryset(self):
         if self.request.method == "GET":
-            return Basket.objects.filter(Q(owner=self.request.user)&Q(status='pai'))  
+            return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}"))  
 
 
 
