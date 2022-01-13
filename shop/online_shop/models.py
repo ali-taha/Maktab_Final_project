@@ -12,6 +12,9 @@ class ProductCategory(models.Model):
     title = models.CharField(max_length=50,unique=True)
     description = models.TextField()
     slug = models.SlugField(unique=True)
+    
+    class Meta:
+        ordering = ['title']
 
 
     def save(self, *args, **kwargs):
@@ -26,16 +29,25 @@ class ProductTag(models.Model):
     title = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        ordering = ['title']
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super(ProductTag, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.title    
+
 
 class StoreType(models.Model):
     title = models.CharField(max_length=50) 
     slug = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ['title']
 
 
     def save(self, *args, **kwargs):
@@ -73,6 +85,9 @@ class Store(models.Model):
     objects = models.Manager()
     alive = ExcludeDeletedStores()
 
+    class Meta:
+        ordering = ['pk']
+
     def __str__(self):
         return self.title
 
@@ -80,6 +95,12 @@ class Store(models.Model):
         self.status = DEL
         self.save()
         pass    
+
+
+class AvailableProduct(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(stock=0)
+
 
 class Product(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
@@ -95,6 +116,9 @@ class Product(models.Model):
     like = models.IntegerField(default=0)
     slug = models.SlugField()
 
+    objects = models.Manager()
+    available = AvailableProduct()
+
     def __str__(self):
         return self.title
 
@@ -109,6 +133,9 @@ class Product(models.Model):
             qs = Product.objects.filter(slug=self.slug)
             exists = qs.exists()
         return super(Product, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['pk']    
 
 
 CON = 'con'
@@ -133,7 +160,7 @@ class Basket(models.Model):
     paid_on = models.DateTimeField(null=True,blank=True)
 
     class Meta:
-        ordering = ['paid_on']
+        ordering = ['pk']
 
     def __str__(self):
         return str(self.id)    
@@ -144,6 +171,9 @@ class BasketItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
     buy_price = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['basket']
 
     def save(self, *args, **kwargs):
         price = self.product.price
@@ -160,11 +190,14 @@ class BasketItem(models.Model):
      basketitem = BasketItem.objects.get(id=self.id)
      price = self.product.price
      if basketitem:
-            self.basket.total_price -= (self.count * price)
-            self.basket.count_items -= self.count
-            self.basket.save()
             self.product.stock = self.product.stock + self.count
             self.product.save()
+            self.basket.total_price -= (self.count * price)
+            self.basket.count_items -= self.count
+            if self.basket.count_items == 0:
+                self.basket.delete()
+            else:    
+                self.basket.save()
      super(BasketItem, self).delete()    
 
  

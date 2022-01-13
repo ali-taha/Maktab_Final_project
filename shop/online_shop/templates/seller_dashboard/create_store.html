@@ -17,6 +17,7 @@
             <div class="card-body px-0 pb-2">
 
               <!-- Create Store -->
+              <div class="container">
               <form method="post" action="{% url 'create_store' %}">
                 {% csrf_token %}
             
@@ -35,6 +36,7 @@
                 {% endfor %}
                 <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Create</button>
                   </form>
+                </div>
                   <!-- End Create Store -->
 
             </div>

@@ -14,18 +14,41 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path,include,re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import SignUpSeller, SignInSeller, LogoutView
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Snippets API",
+      default_version='v1',
+      description="Test description",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="contact@snippets.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
-    path('',SignInSeller.as_view(), name='sign_in'),
+    
     path('admin/', admin.site.urls),
-    path('sign-up',SignUpSeller.as_view() , name='sign_up'),
-    path('logout',LogoutView.as_view() , name='logout_view'),
     path('blog/',include('blog.urls')),
-    path('dashboard/',include('online_shop.urls')),
+    path('', include('users.urls')),  # sellers register, login url's
+    path('dashboard/',include('online_shop.urls')), # sellers dashboard url's
+
+    path('api_user/v1/', include('users.urls_api')), # customers register, login url's
+    path('api_store/v1/', include('online_shop.urls_api')), # customers dashboard urls
+
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = 'Shop Admin'
+        
