@@ -101,13 +101,25 @@ class TestAPI(APITestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-   #   def test_pay_basket_api(self):
-   #       self.client.force_authenticate(self.user)
-   #       url= reverse("pay_basket_api", args=(f'{self.basket1.id}',))
-   #       resp = self.client.put(url)
-   #       # self.basket1.status = "con"
-   #       self.assertEqual(resp.status_code, 200)
-   #       print(self.basket1.status)
+     def test_pay_basket_api(self):
+         self.client.force_authenticate(self.user)
+         url= reverse("pay_basket_api", args=(f'{self.basket1.pk}',))
+         data={}
+         resp = self.client.put(url,data)
+         print(resp.data)
+         # self.basket1.status = "con"
+         self.assertEqual(resp.status_code, 200)
+         print(self.basket1.status)
+
+
+     def test_show_baskets_api(self):
+         self.client.force_authenticate(self.user)
+         url= reverse("show_baskets_api",args=(f'rev',))
+         resp=self.client.get(url) 
+         self.assertEqual(resp.status_code, 200)
+         self.assertEqual(len(resp.data), 1)
+
+
 
 
     
