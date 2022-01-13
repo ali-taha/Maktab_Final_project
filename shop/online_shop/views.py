@@ -293,10 +293,12 @@ class AddBasketItemApi(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        basket = serializer.validated_data['basket']
-        product = serializer.validated_data['product']
+        # basket = serializer.validated_data['basket']
+        # product = serializer.validated_data['product']
+        basket = Basket.objects.get(id=self.kwargs.get('basket_id'))
+        product = Product.objects.get(id=self.kwargs.get('product_id')) 
         if basket.store == product.store:
-            basket_item = self.perform_create(serializer)
+            basket_item = self.perform_create(serializer, basket, product)
             headers = self.get_success_headers(serializer.data)
             return Response(
                     data={"Basket Item Successfully added": f"{basket_item.id}"},
@@ -309,8 +311,8 @@ class AddBasketItemApi(generics.CreateAPIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-    def perform_create(self, serializer):
-        return serializer.save()   
+    def perform_create(self, serializer, basket, product):
+        return serializer.save(basket=basket, product=product)   
 
 class DeleteBasketItemApi(generics.DestroyAPIView):
 

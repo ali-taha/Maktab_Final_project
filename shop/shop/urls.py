@@ -35,16 +35,15 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-
+    
     path('admin/', admin.site.urls),
     path('blog/',include('blog.urls')),
-    """    Sellers url's    """
-    path('', include('users.urls')),  
-    path('dashboard/',include('online_shop.urls')),
-    """    Customers url's    """
-    path('user_api/v1/', include('users.urls_api')), # customers register, login url's
-    path('store_api/v1/', include('online_shop.urls_api')), # customers dashboard urls(api)
-    """    Swagger url's    """
+    path('', include('users.urls')),  # sellers register, login url's
+    path('dashboard/',include('online_shop.urls')), # sellers dashboard url's
+
+    path('api_user/v1/', include('users.urls_api')), # customers register, login url's
+    path('api_store/v1/', include('online_shop.urls_api')), # customers dashboard urls
+
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
@@ -52,3 +51,4 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = 'Shop Admin'
+        
