@@ -83,19 +83,17 @@ class TestAPI(APITestCase):
 
      def test_add_basket_item(self):
         self.client.force_authenticate(self.user)
-        data = {"basket": f'{self.basket1}', "product": self.product1.id, "count":1}
-        url= reverse("basket_add_item_api") 
+        data = {"count":1}
+        url= reverse("basket_add_item_api", kwargs={"basket_id": f'{self.basket1}', "product_id": self.product1.id,}) 
         resp = self.client.post(url, data=data)
-        print(resp.data)
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.data.get('Basket Item Successfully added'), '1')
 
      def test_delete_basket_item(self):
         self.client.force_authenticate(self.user)
-        data = {"basket": f'{self.basket1}', "product": self.product1.id, "count":1}
-        url= reverse("basket_add_item_api") 
+        data = {"count":1}
+        url= reverse("basket_add_item_api", kwargs={"basket_id": f'{self.basket1}', "product_id": self.product1.id,}) 
         resp = self.client.post(url, data=data)
-        print(resp.data)
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(resp.data.get('Basket Item Successfully added'), '3') 
         url= reverse("delete_basket_item_api", args=(1,))
