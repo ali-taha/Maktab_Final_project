@@ -352,10 +352,13 @@ class PayBasketApi(generics.UpdateAPIView):
 class ShowBasketsApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PaidBasketsSerializer
-
+      
     def get_queryset(self):
         if self.request.method == "GET":
-            return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}"))  
+          if self.kwargs.get('status') == 'rev' or 'pai':
+              return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}")) 
+          else:
+              return None     
 
 
 
