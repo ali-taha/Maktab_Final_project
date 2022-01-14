@@ -326,6 +326,11 @@ class DeleteBasketItemApi(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(data={"msg": " Basket Deleted "},status=status.HTTP_200_OK)
+
 class PayBasketApi(generics.UpdateAPIView):
 
     permission_classes = (IsAuthenticated,)

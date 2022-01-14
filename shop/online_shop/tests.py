@@ -28,6 +28,7 @@ class TestAPI(APITestCase):
         self.product2 = Product.objects.create(store=self.store2, category=self.product_category1, title='product2', price = 2000,stock=0)
 
         self.basket1 = Basket.objects.create(owner=self.user, store=self.store1, status='rev')
+
  
 
      def test_user_sign_up(self):
@@ -36,6 +37,15 @@ class TestAPI(APITestCase):
         resp = self.client.post(url, data=data)
         self.assertEqual(resp.status_code, 201)
 
+     def test_wrong_user_sign_up(self):
+        url = reverse("sign_up_api")
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        self.client.post(url, data=data)
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        resp = self.client.post(url, data=data)
+        print(resp.data)
+        self.assertEqual(resp.status_code, 400)
+        
      def test_user_sgn_in(self):
         data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
         url = reverse("sign_up_api")
@@ -118,6 +128,7 @@ class TestAPI(APITestCase):
          resp=self.client.get(url) 
          self.assertEqual(resp.status_code, 200)
          self.assertEqual(len(resp.data), 1)
+
 
 
 
