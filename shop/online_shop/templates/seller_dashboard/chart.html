@@ -5,8 +5,7 @@
 {% block title_2 %}Store Sales Chart{% endblock title_2 %}
 
 {% block main_content %}
-{{months}}
-{{order_count}}
+
 
 <div class="row mt-4">
     <div class="col-lg-6 col-md-6 mt-4 mb-4">
@@ -19,12 +18,7 @@
           </div>
         </div>
         <div class="card-body">
-          <h6 class="mb-0 ">Website Views</h6>
-          <p class="text-sm ">Last Campaign Performance</p>
-          <hr class="dark horizontal">
-          <div class="d-flex ">
-            <i class="material-icons text-sm my-auto me-1">schedule</i>
-            <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
+ 
           </div>
         </div>
       </div>
@@ -39,12 +33,7 @@
           </div>
         </div>
         <div class="card-body">
-          <h6 class="mb-0 "> Daily Sales </h6>
-          <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales. </p>
-          <hr class="dark horizontal">
-          <div class="d-flex ">
-            <i class="material-icons text-sm my-auto me-1">schedule</i>
-            <p class="mb-0 text-sm"> updated 4 min ago </p>
+
           </div>
         </div>
       </div>
@@ -73,7 +62,7 @@
     new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["M", "T", "W", "T", "F", "S", "S"],
+        labels: {{months|safe}},
         datasets: [{
           label: "Sales",
           tension: 0.4,
@@ -81,7 +70,7 @@
           borderRadius: 4,
           borderSkipped: false,
           backgroundColor: "rgba(255, 255, 255, .8)",
-          data: [50, 20, 10, 22, 50, 10, 40],
+          data: {{order_count}},
           maxBarThickness: 6
         }, ],
       },

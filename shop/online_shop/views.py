@@ -210,7 +210,7 @@ class ChartView(View):
 
     def get(self, request, *args, **kwargs):
         store_id = self.kwargs['pk']
-        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')     
+        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Sum('total_price')).values('month', 'order_count')     
         months=[]
         month_sell=[]
         for item in sells:
