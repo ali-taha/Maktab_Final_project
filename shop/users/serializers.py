@@ -59,3 +59,9 @@ class OtpRequestSerializer(serializers.Serializer):
     phone_regex = RegexValidator(regex=r'^0?9\d{9}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = serializers.CharField(validators=[phone_regex], max_length=15, )        
     otp_code = serializers.CharField(max_length=4)
+
+
+class SignInWithPhoneSerializer(serializers.Serializer):
+    phone_regex = RegexValidator(regex=r'^0?9\d{9}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_number = serializers.CharField(validators=[phone_regex], max_length=15, )        
+    password = serializers.CharField(max_length=20)    

@@ -15,9 +15,11 @@ from django.shortcuts import (
 )
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, OtpRequestSerializer
+from .serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, OtpRequestSerializer, SignInWithPhoneSerializer
 import random
 import json, requests
+
+
 
 User = get_user_model()
 redis_client = redis.StrictRedis(decode_responses=True)
@@ -151,6 +153,17 @@ class OtpPhoneNumber(generics.GenericAPIView):
             else:
                     return Response(data={"msg":"Code is Expired"}, status=status.HTTP_400_BAD_REQUEST)  
         return Response(data={"msg":"Phone number is not True"}, status=status.HTTP_400_BAD_REQUEST)  
+
+
+# class SignInWithPhone(generics.GenericAPIView):
+#     serializer_class = SignInWithPhoneSerializer    
+
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = OtpRequestSerializer(data=request.data)  
+#         serializer.is_valid(raise_exception=True)    
+
+#         return Response(data={"msg":"Phone number is not True"}, status=status.HTTP_400_BAD_REQUEST)     
              
     
 

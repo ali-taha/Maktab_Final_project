@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     user_avatar = models.ImageField(upload_to='uploads/user_avatar', blank=True, null=True)    
 
     REQUIRED_FIELDS = ['email', 'phone_number']
-
+    PHONE_FIELD = 'phone_number'
 
     def __str__(self):
         return self.username
