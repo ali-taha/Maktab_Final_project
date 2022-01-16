@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import SignUpApi, ProfileApi, OtpPhoneNumber
+from users.views import SignUpApi, ProfileApi, OtpPhoneNumber, RequestOtpCode, LoginWithCode
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
 from users.customer_token import MyTokenObtainPairView
 
@@ -12,7 +12,8 @@ urlpatterns = [
     path('sign-in/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('profile/<username>',ProfileApi.as_view(), name='profile_api'),
     path('otp/',OtpPhoneNumber.as_view() , name='otp_view'),
-    # path('sign-in-with-phone/', TokenObtainPairView.as_view(), name='sign_in_with_phone_api'),
+    path('request-otp/', RequestOtpCode.as_view(), name='request-otp-api'),
+    path('login-with-code/', LoginWithCode.as_view(), name='login-with-code-api'),
 
 
 ]
