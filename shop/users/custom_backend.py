@@ -9,11 +9,10 @@ User = get_user_model()
 
 class CustomAuthentication(BaseAuthentication):
 
-    def authenticate(self, request, **kwargs):
+    def authenticate(self, request, username, password, **kwargs):
+        # phone_number = username
         try:
-            phone_number = request.data.get('phone_number')
-            password = request.data.get('password')
-            user = User.objects.get(Q(phone_number=phone_number)&Q(is_seller=False))
+            user = User.objects.get(Q(phone_number=username)&Q(is_seller=False))
             if user.check_password(password) is True:
                 return user
         except User.DoesNotExist:
