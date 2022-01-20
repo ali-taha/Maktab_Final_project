@@ -56,19 +56,18 @@ class SignInSeller(FormView):
             username=form.cleaned_data.get("username"),
             password=form.cleaned_data.get("password"),
         )
-        if user is not None:
+        if user is not None and user.is_seller:
             login(self.request, user)
             messages.success(self.request, "You have logged in successfully")
         else:
-            HttpResponse("user not true")
+            return HttpResponse("User is not valid")
         return super().form_valid(form)
 
     def get_success_url(self):
-        id = self.request.user.id
         return reverse(
             "store_list",
         )
-
+    
 
 class LogoutView(View):
     def get(self, request):
@@ -162,30 +161,29 @@ class RequestOtpCode(generics.GenericAPIView):
 
     def get_queryset(self):
             phone = self.request.data.get('phone')
-            return User.objects.filter(Q(phone=phone)&Q(is_phone_active=True)) 
+            return User.objects.filter(Q(phone_number=phone)&Q(is_phone_active=True)) 
 
     def post(self, request, *args, **kwargs):
         user_phone = self.request.data.get('phone')
-        otp = random.randint(1000,9999)
-
-        redis_client.set(f'otp:{user_phone}',otp, ex=300)
-        url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
-        payload = json.dumps({
-        "username": "09190771284",
-        "password": "6ZRS#",
-        "to": f"{user_phone}",
-        "from": "50004001771284",
-        "text": f"{otp}"
-        })
-        headers = {
-        'Content-Type': 'application/json'
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-        return Response(data={"msg":f"code sent to : {user_phone}"}, status=status.HTTP_200_OK)                
+        if self.get_queryset():
+            otp = random.randint(1000,9999)
+            redis_client.set(f'otp:{user_phone}',otp, ex=300)
+            url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
+            payload = json.dumps({
+            "username": "09190771284",
+            "password": "6ZRS#",
+            "to": f"{user_phone}",
+            "from": "50004001771284",
+            "text": f"{otp}"
+            })
+            headers = {
+            'Content-Type': 'application/json'
+            }
+            response = requests.request("POST", url, headers=headers, data=payload)
+            return Response(data={"msg":f"code sent to : {user_phone}"}, status=status.HTTP_200_OK) 
+        else:
+            return Response(data={"msg":f"user with number {user_phone} is not avtive"}, status=status.HTTP_204_NO_CONTENT)              
     
-
-class LoginWithCode(generics.GenericAPIView):
-    pass    
 
 
 

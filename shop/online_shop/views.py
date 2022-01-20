@@ -345,10 +345,7 @@ class PayBasketApi(generics.UpdateAPIView):
     def perform_update(self, serializer):
         # serializer.validated_data['status'] ='pai'
         serializer.save(status='pai')    
-
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)  
-
+ 
     def get_queryset(self):
         if self.request.method == "PUT":
             return Basket.objects.filter(owner=self.request.user)       

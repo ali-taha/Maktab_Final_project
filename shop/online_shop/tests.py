@@ -113,9 +113,9 @@ class TestAPI(APITestCase):
 
      def test_pay_basket_api(self):
          self.client.force_authenticate(self.user)
+         basket1 = self.basket1
          url= reverse("pay_basket_api", args=(f'{self.basket1.pk}',))
-         data={}
-         resp = self.client.put(url,data)
+         resp = self.client.put(url)
          print(resp.data)
          # self.basket1.status = "con"
          self.assertEqual(resp.status_code, 200)

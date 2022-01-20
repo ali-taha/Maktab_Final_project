@@ -3,17 +3,22 @@ from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 from rest_framework import exceptions
 from django.db.models import Q
+import redis
+
 
 User = get_user_model()
+redis_client = redis.StrictRedis(decode_responses=True)
 
-
-class CustomAuthentication(ModelBackend):
+class CustomAuthenticationOtp(ModelBackend):
 
     def authenticate(self, request, username, password, **kwargs):
         # phone_number = username
         try:
             user = User.objects.get(Q(phone_number=username)&Q(is_seller=False))
-            if user.check_password(password) is True:
+            saved_otp = redis_client.get(f'otp:{user.phone_number}')
+            if  saved_otp == password:
                 return user
+            # if user.check_password(password) is True:
+            #     return user
         except User.DoesNotExist:
             pass
