@@ -48,7 +48,7 @@ class PayBasketerializer(serializers.ModelSerializer):
         fields = ['status']  
 
 
-class PaidBasketsSerializer(serializers.ModelSerializer):
+class ShowBasketsSerializer(serializers.ModelSerializer):
     class Meta:
         model= Basket
         fields = "__all__"                     

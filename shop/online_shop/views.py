@@ -15,8 +15,9 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer, PaidBasketsSerializer
+from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer, ShowBasketsSerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
+from drf_yasg.utils import swagger_auto_schema
 
 
 User = get_user_model()
@@ -350,17 +351,19 @@ class PayBasketApi(generics.UpdateAPIView):
         if self.request.method == "PUT":
             return Basket.objects.filter(owner=self.request.user)       
 
-
 class ShowBasketsApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = PaidBasketsSerializer
-      
+    serializer_class = ShowBasketsSerializer
+
     def get_queryset(self):
-        if self.request.method == "GET":
-          if self.kwargs.get('status') == 'rev' or 'pai':
-              return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}")) 
-          else:
-              return None     
+          # for swagger warning
+          if getattr(self, "swagger_fake_view", False):
+              return Basket.objects.none() 
+          elif self.kwargs.get('status') in ['rev','pai'] :
+              return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}"))
+
+    
+          
 
 
 

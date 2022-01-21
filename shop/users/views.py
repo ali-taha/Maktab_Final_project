@@ -15,12 +15,11 @@ from django.shortcuts import (
 )
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, OtpRequestSerializer, SignInWithPhoneSerializer,RequestOtpCodeSerializer
+from .serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, OtpRequestSerializer,RequestOtpCodeSerializer
 import random
 import json, requests
 from django.db.models import Q, Avg, Count, Sum
-
-
+from rest_framework.parsers import FormParser, MultiPartParser
 
 
 User = get_user_model()
@@ -96,12 +95,13 @@ class SignUpApi(generics.CreateAPIView):
             status=status.HTTP_201_CREATED,
             headers=headers,
         )
-
+        
 class ProfileApi(generics.RetrieveUpdateAPIView):
 
     permission_classes = (IsAuthenticated,)
     lookup_field = "username"
     lookup_field_kwargs ="username"
+    parser_classes = (FormParser, MultiPartParser)
 
     def get_queryset(self):
             return User.objects.filter(id=self.request.user.id) 
@@ -110,6 +110,8 @@ class ProfileApi(generics.RetrieveUpdateAPIView):
         if self.request.method == "GET":
             return UserDetailSerializer
         elif self.request.method == "PUT":
+            return UserUpdateSerializer 
+        elif self.request.method == "PATCH":
             return UserUpdateSerializer 
 
 def get_otpcode(phone_number):
@@ -128,19 +130,18 @@ def get_otpcode(phone_number):
         }
         response = requests.request("POST", url, headers=headers, data=payload)
         return Response(data={"msg":f"code sent to : {phone_number}"}, status=status.HTTP_200_OK) 
+
+
+class RequestCode(generics.GenericAPIView):
+    serializer_class=OtpRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+        user_phone = self.request.data.get("phone_number") 
+        return get_otpcode(user_phone)       
                             
+class ConfirmPhoneNumber(generics.GenericAPIView):
+    serializer_class = OtpRequestSerializer
 
-
-class OtpPhoneNumber(generics.GenericAPIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-            return User.objects.all() 
-
-    def get(self, request, *args, **kwargs):
-        user_phone = self.request.user.phone_number
-
-        return get_otpcode(user_phone)
         
     def post(self, request, *args, **kwargs):
         serializer = OtpRequestSerializer(data=request.data)
@@ -159,7 +160,7 @@ class OtpPhoneNumber(generics.GenericAPIView):
         return Response(data={"msg":"Phone number is not True"}, status=status.HTTP_400_BAD_REQUEST) 
 
 
-class RequestOtpCode(generics.GenericAPIView):
+class RequestCodeForLogin(generics.GenericAPIView):
     serializer_class = RequestOtpCodeSerializer   
 
     def get_queryset(self):
