@@ -158,8 +158,8 @@ EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'users.custom_backend.CustomAuthentication',
-    'users.custom_backend_otp.CustomAuthenticationOtp',
+    'users.backend_phone_number.CustomAuthentication',
+    'users.backend_otp_code.CustomAuthenticationOtp',
 
 ]
 

@@ -112,6 +112,24 @@ class ProfileApi(generics.RetrieveUpdateAPIView):
         elif self.request.method == "PUT":
             return UserUpdateSerializer 
 
+def get_otpcode(phone_number):
+        otp = random.randint(1000,9999)
+        redis_client.set(f'otp:{phone_number}',otp, ex=300)
+        url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
+        payload = json.dumps({
+        "username": "09190771284",
+        "password": "6ZRS#",
+        "to": f"{phone_number}",
+        "from": "50004001771284",
+        "text": f"your code : {otp}\n ali_shop"
+        })
+        headers = {
+        'Content-Type': 'application/json'
+        }
+        response = requests.request("POST", url, headers=headers, data=payload)
+        return Response(data={"msg":f"code sent to : {phone_number}"}, status=status.HTTP_200_OK) 
+                            
+
 
 class OtpPhoneNumber(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
@@ -121,24 +139,9 @@ class OtpPhoneNumber(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         user_phone = self.request.user.phone_number
-        otp = random.randint(1000,9999)
 
-        redis_client.set(f'otp:{user_phone}',otp, ex=300)
-        url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
-        payload = json.dumps({
-        "username": "09190771284",
-        "password": "6ZRS#",
-        "to": f"{user_phone}",
-        "from": "50004001771284",
-        "text": f"{otp}"
-        })
-        headers = {
-        'Content-Type': 'application/json'
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-        return Response(data={"msg":f"code sent to : {user_phone}"}, status=status.HTTP_200_OK)
+        return get_otpcode(user_phone)
         
-
     def post(self, request, *args, **kwargs):
         serializer = OtpRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)    
@@ -153,7 +156,7 @@ class OtpPhoneNumber(generics.GenericAPIView):
                     return Response(data={"msg":f"ok : {phone}"}, status=status.HTTP_200_OK) 
             else:
                     return Response(data={"msg":"Code is Expired"}, status=status.HTTP_400_BAD_REQUEST)  
-        return Response(data={"msg":"Phone number is not True"}, status=status.HTTP_400_BAD_REQUEST)  
+        return Response(data={"msg":"Phone number is not True"}, status=status.HTTP_400_BAD_REQUEST) 
 
 
 class RequestOtpCode(generics.GenericAPIView):
@@ -162,25 +165,11 @@ class RequestOtpCode(generics.GenericAPIView):
     def get_queryset(self):
             phone = self.request.data.get('phone')
             return User.objects.filter(Q(phone_number=phone)&Q(is_phone_active=True)) 
-
+            
     def post(self, request, *args, **kwargs):
         user_phone = self.request.data.get('phone')
         if self.get_queryset():
-            otp = random.randint(1000,9999)
-            redis_client.set(f'otp:{user_phone}',otp, ex=300)
-            url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
-            payload = json.dumps({
-            "username": "09190771284",
-            "password": "6ZRS#",
-            "to": f"{user_phone}",
-            "from": "50004001771284",
-            "text": f"{otp}"
-            })
-            headers = {
-            'Content-Type': 'application/json'
-            }
-            response = requests.request("POST", url, headers=headers, data=payload)
-            return Response(data={"msg":f"code sent to : {user_phone}"}, status=status.HTTP_200_OK) 
+            return get_otpcode(user_phone)
         else:
             return Response(data={"msg":f"user with number {user_phone} is not avtive"}, status=status.HTTP_204_NO_CONTENT)              
     
