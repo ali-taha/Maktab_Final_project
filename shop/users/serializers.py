@@ -38,6 +38,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "phone_number",
             "user_avatar",
             "is_seller",
+            "is_phone_active",
         ]
 
 
@@ -54,6 +55,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             "phone_number": {"required": False, "allow_null": True},
             "user_avatar": {"required": False, "allow_null": True},
         }
+
+        
 
 class OtpRequestSerializer(serializers.Serializer):
     phone_regex = RegexValidator(regex=r'^0?9\d{9}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")

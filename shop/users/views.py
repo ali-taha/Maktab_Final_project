@@ -50,6 +50,12 @@ class SignInSeller(FormView):
     template_name = "login/sign-in.html"
     form_class = SelllerLoginForm
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse('store_list'))
+        """Handle GET requests: instantiate a blank version of the form."""
+        return self.render_to_response(self.get_context_data())
+
     def form_valid(self, form):
         user = authenticate(
             username=form.cleaned_data.get("username"),
@@ -113,6 +119,18 @@ class ProfileApi(generics.RetrieveUpdateAPIView):
             return UserUpdateSerializer 
         elif self.request.method == "PATCH":
             return UserUpdateSerializer 
+
+    def put(self, request, *args, **kwargs):
+
+        return self.update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        if self.request.data.get('phone_number'):
+            new_phone = self.request.data.get('phone_number')
+            old_phone = self.request.user.phone_number
+            if new_phone != old_phone:
+                serializer.save(is_phone_active=False)
+        serializer.save()    
 
 def get_otpcode(phone_number):
         otp = random.randint(1000,9999)

@@ -361,12 +361,3 @@ class ShowBasketsApi(generics.ListAPIView):
               return Basket.objects.none() 
           elif self.kwargs.get('status') in ['rev','pai'] :
               return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}"))
-
-    
-          
-
-
-
-
-
-

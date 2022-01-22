@@ -47,7 +47,6 @@ class PayBasketerializer(serializers.ModelSerializer):
         model= Basket
         fields = ['status']  
 
-
 class ShowBasketsSerializer(serializers.ModelSerializer):
     class Meta:
         model= Basket
