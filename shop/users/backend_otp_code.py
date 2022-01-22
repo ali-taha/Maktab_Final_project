@@ -8,7 +8,7 @@ User = get_user_model()
 redis_client = redis.StrictRedis(decode_responses=True)
 
 def check_otp_code(user,otp_code):
-        redis_otp = redis_client.get(f'otp:{user.phone_number}')
+        redis_otp = redis_client.get(f'login_code:{user.phone_number}')
         if redis_otp == otp_code:
             return True
         else:

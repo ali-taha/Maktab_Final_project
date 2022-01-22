@@ -132,9 +132,13 @@ class ProfileApi(generics.RetrieveUpdateAPIView):
                 serializer.save(is_phone_active=False)
         serializer.save()    
 
-def get_otpcode(phone_number):
+def get_otpcode(phone_number, type):
         otp = random.randint(1000,9999)
-        redis_client.set(f'otp:{phone_number}',otp, ex=300)
+        if type == 'activation':
+            redis_client.set(f'active_code:{phone_number}',otp, ex=300)
+        elif type == 'logincode':
+            redis_client.set(f'login_code:{phone_number}',otp, ex=300)
+
         url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
         payload = json.dumps({
         "username": "09190771284",
@@ -154,13 +158,16 @@ class RequestCode(generics.GenericAPIView):
     serializer_class=OtpRequestSerializer
 
     def post(self, request, *args, **kwargs):
-        user_phone = self.request.data.get("phone_number") 
-        return get_otpcode(user_phone)       
+        user_phone = self.request.data.get("phone_number")
+        valid_user = User.objects.filter(Q(phone_number=user_phone)&Q(is_phone_active=False)).exists()
+        if valid_user:
+                return get_otpcode(user_phone, 'activation')   
+        else:
+            return Response(data={"msg":"phone number is not valid or is activated"}, status=status.HTTP_400_BAD_REQUEST)       
                             
 class ConfirmPhoneNumber(generics.GenericAPIView):
     serializer_class = OtpRequestSerializer
 
-        
     def post(self, request, *args, **kwargs):
         serializer = OtpRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)    
@@ -168,7 +175,7 @@ class ConfirmPhoneNumber(generics.GenericAPIView):
         code = serializer.validated_data['otp_code']
         user = self.request.user
         if user.phone_number == phone:
-            otp = redis_client.get(f'otp:{phone}')
+            otp = redis_client.get(f'activation:{phone}')
             if otp and code == otp:
                     user.is_phone_active = True
                     user.save()
@@ -188,9 +195,9 @@ class RequestCodeForLogin(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         user_phone = self.request.data.get('phone')
         if self.get_queryset():
-            return get_otpcode(user_phone)
+            return get_otpcode(user_phone, 'logincode')
         else:
-            return Response(data={"msg":f"user with number {user_phone} is not avtive"}, status=status.HTTP_204_NO_CONTENT)              
+            return Response(data={"msg":f"number {user_phone} is not avtive or valid"}, status=status.HTTP_204_NO_CONTENT)              
     
 
 
