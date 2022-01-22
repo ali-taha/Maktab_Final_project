@@ -154,7 +154,7 @@ def get_otpcode(phone_number, type):
         return Response(data={"msg":f"code sent to : {phone_number}"}, status=status.HTTP_200_OK) 
 
 
-class RequestCode(generics.GenericAPIView):
+class RequestActiveCode(generics.GenericAPIView):
     serializer_class=OtpRequestSerializer
 
     def post(self, request, *args, **kwargs):
@@ -172,17 +172,18 @@ class ConfirmPhoneNumber(generics.GenericAPIView):
         serializer = OtpRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)    
         phone = serializer.validated_data['phone_number']
-        code = serializer.validated_data['otp_code']
-        user = self.request.user
-        if user.phone_number == phone:
-            otp = redis_client.get(f'activation:{phone}')
-            if otp and code == otp:
+        code = serializer.validated_data['code']
+        saved_code = redis_client.get(f'active_code:{phone}')
+        if saved_code: 
+            if code == saved_code: 
+                    user = User.objects.get(phone_number=phone)
                     user.is_phone_active = True
                     user.save()
-                    return Response(data={"msg":f"ok : {phone}"}, status=status.HTTP_200_OK) 
+                    return Response(data={"msg":f"phone activated : {phone}"}, status=status.HTTP_200_OK) 
             else:
-                    return Response(data={"msg":"Code is Expired"}, status=status.HTTP_400_BAD_REQUEST)  
-        return Response(data={"msg":"Phone number is not True"}, status=status.HTTP_400_BAD_REQUEST) 
+                    return Response(data={"msg":"Code is Not True"}, status=status.HTTP_400_BAD_REQUEST)  
+        else:            
+            return Response(data={"msg":"Code is Expired"}, status=status.HTTP_400_BAD_REQUEST) 
 
 
 class RequestCodeForLogin(generics.GenericAPIView):
