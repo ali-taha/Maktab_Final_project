@@ -1,5 +1,5 @@
 from django.urls import path
-from online_shop.views import StoreListApi, StoreTypeListApi, ProductListApi, BasketCreateApi, AddBasketItemApi, DeleteBasketItemApi, PayBasketApi, ShowBasketsApi
+from online_shop.api.views import StoreListApi, StoreTypeListApi, ProductListApi, BasketCreateApi, AddBasketItemApi, DeleteBasketItemApi, PayBasketApi, ShowBasketsApi
 
 
 

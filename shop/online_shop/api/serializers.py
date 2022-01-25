@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Store, StoreType, Product, Basket, BasketItem
+from online_shop.models import Store, StoreType, Product, Basket, BasketItem
 
 User = get_user_model()
 
