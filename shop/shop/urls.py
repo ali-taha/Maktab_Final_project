@@ -41,8 +41,8 @@ urlpatterns = [
     path('', include('users.urls')),  # sellers register, login url's
     path('dashboard/',include('online_shop.urls')), # sellers dashboard url's
 
-    path('api_user/v1/', include('users.urls_api')), # customers register, login url's
-    path('api_store/v1/', include('online_shop.urls_api')), # customers dashboard urls
+    path('api_user/v1/', include('users.api.urls')), # customers register, login url's
+    path('api_store/v1/', include('online_shop.api.urls')), # customers dashboard urls
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

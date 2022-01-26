@@ -15,8 +15,8 @@ from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer, PaidBasketsSerializer
 from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
+from drf_yasg.utils import swagger_auto_schema
 
 
 User = get_user_model()
@@ -210,155 +210,12 @@ class ChartView(View):
 
     def get(self, request, *args, **kwargs):
         store_id = self.kwargs['pk']
-        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Count('id')).values('month', 'order_count')     
+        sells = Basket.objects.filter(Q(store_id=store_id)&Q(status="pai")).annotate(month=TruncMonth('paid_on')).values('month').annotate(order_count=Sum('total_price')).values('month', 'order_count')     
         months=[]
         month_sell=[]
         for item in sells:
                 months.append(item['month'].strftime('%B'))
                 month_sell.append(item['order_count'])
         return render(request, "seller_dashboard/chart.html",{"months":months,"order_count":month_sell})
-
-
-
-    """                API  Views                        """
-
-
-class StoreListApi(generics.ListAPIView):
-    filterset_class = StoreListFilter
-    permission_classes = (IsAuthenticated,)
-    serializer_class = StoreListSerializer
-
-    def get_queryset(self):
-        if self.request.method == "GET":
-            return Store.alive.filter(status='con')
-
-
-class StoreTypeListApi(generics.ListAPIView):
-    filterset_class = StoreTypeFilter
-    permission_classes = (IsAuthenticated,)
-    serializer_class = StoreTypeListSerializer
-
-    def get_queryset(self):
-        if self.request.method == "GET":
-            return StoreType.objects.all()    
-
-
-class ProductListApi(generics.ListAPIView):
-    filterset_class = ProductListFilter
-    permission_classes = (IsAuthenticated,)
-    serializer_class = ProductListSerializer
-
-    def get_queryset(self):
-        if self.request.method == "GET":
-            return Product.available.filter(store__id=self.kwargs.get('store'))     
-
-
-class BasketCreateApi(generics.CreateAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset =Product.objects.all()
-    serializer_class = CreateBasketSerializer
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        product_id  = self.kwargs.get('product')
-        product = Product.objects.get(id=product_id)
-        store = product.store 
-        basket = self.perform_create(serializer, product, store)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            data={"basket_id": f"{basket.id}"},
-            status=status.HTTP_201_CREATED,
-            headers=headers,
-        )               
-
-    def perform_create(self, serializer, product, store):
-        basket  = serializer.save(owner=self.request.user,store=store)
-        BasketItem.objects.create(basket=basket,product=product,count=1)
-        return serializer.save(owner=self.request.user,store=store)  
-
-
-class AddBasketItemApi(generics.CreateAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset =BasketItem.objects.all()
-    serializer_class = CreateBasketItemSerializer
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-  
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # basket = serializer.validated_data['basket']
-        # product = serializer.validated_data['product']
-        basket = Basket.objects.get(id=self.kwargs.get('basket_id'))
-        product = Product.objects.get(id=self.kwargs.get('product_id')) 
-        if basket.store == product.store:
-            basket_item = self.perform_create(serializer, basket, product)
-            headers = self.get_success_headers(serializer.data)
-            return Response(
-                    data={"Basket Item Successfully added": f"{basket_item.id}"},
-                    status=status.HTTP_201_CREATED,
-                    headers=headers,
-                )
-        else:
-            return Response(
-                data={"msg": " You Can't By From Some Stores in a Basket "},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-    def perform_create(self, serializer, basket, product):
-        return serializer.save(basket=basket, product=product)   
-
-class DeleteBasketItemApi(generics.DestroyAPIView):
-
-    permission_classes = (IsAuthenticated,)
-    queryset =BasketItem.objects.all()
-    serializer_class = DeleteBasketItemSerializer
-
-    lookup_field = "id"
-    lookup_field_kwargs ="id"
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-class PayBasketApi(generics.UpdateAPIView):
-
-    permission_classes = (IsAuthenticated,)
-    serializer_class = PayBasketerializer
-
-    lookup_field = "id"
-    lookup_field_kwargs ="id"
-    
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def perform_update(self, serializer):
-        # serializer.validated_data['status'] ='pai'
-        serializer.save(status='pai')    
-
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)  
-
-    def get_queryset(self):
-        if self.request.method == "PUT":
-            return Basket.objects.filter(owner=self.request.user)       
-
-
-class ShowBasketsApi(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = PaidBasketsSerializer
-
-    def get_queryset(self):
-        if self.request.method == "GET":
-            return Basket.objects.filter(Q(owner=self.request.user)&Q(status=f"{self.kwargs.get('status')}"))  
-
-
-
-
 
 

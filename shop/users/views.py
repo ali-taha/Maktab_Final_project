@@ -1,3 +1,4 @@
+import redis
 from django.views.generic.edit import FormView
 from django.views.generic import View
 from .forms import RegisterSeller, SelllerLoginForm
@@ -14,9 +15,14 @@ from django.shortcuts import (
 )
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer
+import random
+import json, requests
+from django.db.models import Q, Avg, Count, Sum
+from rest_framework.parsers import FormParser, MultiPartParser
+
 
 User = get_user_model()
+redis_client = redis.StrictRedis(decode_responses=True)
 
 
 class SignUpSeller(FormView):
@@ -43,67 +49,33 @@ class SignInSeller(FormView):
     template_name = "login/sign-in.html"
     form_class = SelllerLoginForm
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse('store_list'))
+        """Handle GET requests: instantiate a blank version of the form."""
+        return self.render_to_response(self.get_context_data())
+
     def form_valid(self, form):
         user = authenticate(
             username=form.cleaned_data.get("username"),
             password=form.cleaned_data.get("password"),
         )
-        if user is not None:
+        if user is not None and user.is_seller:
             login(self.request, user)
             messages.success(self.request, "You have logged in successfully")
         else:
-            HttpResponse("user not true")
+            return HttpResponse("User is not valid")
         return super().form_valid(form)
 
     def get_success_url(self):
-        id = self.request.user.id
         return reverse(
             "store_list",
         )
-
+    
 
 class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect(reverse("sign_in"))
-
-
-"""                API  Views                        """
-
-
-class SignUpApi(generics.CreateAPIView):
-
-    queryset = User.objects.all()
-    serializer_class = UserSignUpSerializer
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            data={"msg": "User successfully created"},
-            status=status.HTTP_201_CREATED,
-            headers=headers,
-        )
-
-class ProfileApi(generics.RetrieveUpdateAPIView):
-
-    permission_classes = (IsAuthenticated,)
-    lookup_field = "username"
-    lookup_field_kwargs ="username"
-
-    def get_queryset(self):
-            return User.objects.filter(id=self.request.user.id) 
-
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return UserDetailSerializer
-        elif self.request.method == "PUT":
-            return UserUpdateSerializer           
-
 
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Store, StoreType, Product, Basket, BasketItem
+from online_shop.models import Store, StoreType, Product, Basket, BasketItem
 
 User = get_user_model()
 
@@ -47,8 +47,7 @@ class PayBasketerializer(serializers.ModelSerializer):
         model= Basket
         fields = ['status']  
 
-
-class PaidBasketsSerializer(serializers.ModelSerializer):
+class ShowBasketsSerializer(serializers.ModelSerializer):
     class Meta:
         model= Basket
         fields = "__all__"                     

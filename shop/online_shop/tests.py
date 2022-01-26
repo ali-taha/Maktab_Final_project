@@ -12,7 +12,7 @@ class TestAPI(APITestCase):
         self.user = User.objects.create(
             username="test",
             password="123",
-            phone_number='09122655658',
+            phone_number='09122975260',
             email='test@gmail.com'
         )
         self.store_type= StoreType.objects.create(title="Type")
@@ -28,19 +28,37 @@ class TestAPI(APITestCase):
         self.product2 = Product.objects.create(store=self.store2, category=self.product_category1, title='product2', price = 2000,stock=0)
 
         self.basket1 = Basket.objects.create(owner=self.user, store=self.store1, status='rev')
+
  
 
      def test_user_sign_up(self):
-        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
         self.assertEqual(resp.status_code, 201)
 
+     def test_wrong_user_sign_up(self):
+        url = reverse("sign_up_api")
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
+        self.client.post(url, data=data)
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 400)
+        
      def test_user_sgn_in(self):
-        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
         data = {"username": "testi", "password": "testi"}
+        url2 = reverse("sign_in_api")
+        resp2 = self.client.post(url2, data=data)
+        self.assertEqual(resp2.status_code, 200) 
+
+     def test_user_sgn_in_with_phone_number(self):
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
+        url = reverse("sign_up_api")
+        resp = self.client.post(url, data=data)
+        data = {"username": "09037226589", "password": "testi"}
         url2 = reverse("sign_in_api")
         resp2 = self.client.post(url2, data=data)
         self.assertEqual(resp2.status_code, 200)   
@@ -100,17 +118,12 @@ class TestAPI(APITestCase):
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
 
-
      def test_pay_basket_api(self):
          self.client.force_authenticate(self.user)
          url= reverse("pay_basket_api", args=(f'{self.basket1.pk}',))
-         data={}
-         resp = self.client.put(url,data)
-         print(resp.data)
-         # self.basket1.status = "con"
+         resp = self.client.put(url)
+         #!!! self.basket1.status = "con"
          self.assertEqual(resp.status_code, 200)
-         print(self.basket1.status)
-
 
      def test_show_baskets_api(self):
          self.client.force_authenticate(self.user)
@@ -118,6 +131,7 @@ class TestAPI(APITestCase):
          resp=self.client.get(url) 
          self.assertEqual(resp.status_code, 200)
          self.assertEqual(len(resp.data), 1)
+
 
 
 
