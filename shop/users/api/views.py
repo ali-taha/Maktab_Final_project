@@ -89,8 +89,8 @@ def get_otpcode(phone_number, type):
 
         url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
         payload = json.dumps({
-        "username": env.str('SMS_USERNAME'),
-        "password": env.str('SMS_PASSWORD'),
+        "username": env('SMS_USERNAME'),
+        "password": env('SMS_PASSWORD'),
         "to": f"{phone_number}",
         "from": env.str('SMS_NUMBER'),
         "text": f"your code : {otp}\n ali_shop"
