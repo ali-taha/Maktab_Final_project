@@ -1,4 +1,3 @@
-import redis
 from django.views.generic.edit import FormView
 from django.views.generic import View
 from users.forms import RegisterSeller, SelllerLoginForm
@@ -21,10 +20,10 @@ import json, requests
 from django.db.models import Q, Avg, Count, Sum
 from rest_framework.parsers import FormParser, MultiPartParser
 import environ
+from django.core.cache import cache
 
 
 User = get_user_model()
-redis_client = redis.StrictRedis(decode_responses=True)
 
 env = environ.Env(
     # set casting, default value
@@ -83,9 +82,9 @@ class ProfileApi(generics.RetrieveUpdateAPIView):
 def get_otpcode(phone_number, type):
         otp = random.randint(1000,9999)
         if type == 'activation':
-            redis_client.set(f'active_code:{phone_number}',otp, ex=300)
+            cache.set(f'active_code:{phone_number}',otp,300)
         elif type == 'logincode':
-            redis_client.set(f'login_code:{phone_number}',otp, ex=300)
+            cache.set(f'login_code:{phone_number}', otp, 300)
 
         url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
         payload = json.dumps({
@@ -121,7 +120,7 @@ class ConfirmPhoneNumber(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)    
         phone = serializer.validated_data['phone_number']
         code = serializer.validated_data['code']
-        saved_code = redis_client.get(f'active_code:{phone}')
+        saved_code = str(cache.get(f'active_code:{phone}'))
         if saved_code: 
             if code == saved_code: 
                     user = User.objects.get(phone_number=phone)
