@@ -12,7 +12,7 @@ class TestAPI(APITestCase):
         self.user = User.objects.create(
             username="test",
             password="123",
-            phone_number='09122655658',
+            phone_number='09122975260',
             email='test@gmail.com'
         )
         self.store_type= StoreType.objects.create(title="Type")
@@ -32,22 +32,23 @@ class TestAPI(APITestCase):
  
 
      def test_user_sign_up(self):
-        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
+        print(resp.data)
         self.assertEqual(resp.status_code, 201)
 
      def test_wrong_user_sign_up(self):
         url = reverse("sign_up_api")
-        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         self.client.post(url, data=data)
-        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         resp = self.client.post(url, data=data)
         print(resp.data)
         self.assertEqual(resp.status_code, 400)
         
      def test_user_sgn_in(self):
-        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09122211"}
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
         data = {"username": "testi", "password": "testi"}

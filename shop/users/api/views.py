@@ -14,7 +14,7 @@ from django.shortcuts import (
 )
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
-from users.api.serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, OtpRequestSerializer,RequestOtpCodeSerializer
+from users.api.serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, ConfirmNumberSerializer,RequestOtpCodeSerializer
 import random
 import json, requests
 from django.db.models import Q, Avg, Count, Sum
@@ -102,10 +102,12 @@ def get_otpcode(phone_number, type):
 
 
 class RequestActiveCode(generics.GenericAPIView):
-    serializer_class=OtpRequestSerializer
+    serializer_class=RequestOtpCodeSerializer
 
     def post(self, request, *args, **kwargs):
-        user_phone = self.request.data.get("phone_number")
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_phone = serializer.validated_data['phone_number']
         valid_user = User.objects.filter(Q(phone_number=user_phone)&Q(is_phone_active=False)).exists()
         if valid_user:
                 return get_otpcode(user_phone, 'activation')   
@@ -113,10 +115,10 @@ class RequestActiveCode(generics.GenericAPIView):
             return Response(data={"msg":"phone number is not valid or is activated"}, status=status.HTTP_400_BAD_REQUEST)       
                             
 class ConfirmPhoneNumber(generics.GenericAPIView):
-    serializer_class = OtpRequestSerializer
+    serializer_class = ConfirmNumberSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = OtpRequestSerializer(data=request.data)
+        serializer = ConfirmNumberSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)    
         phone = serializer.validated_data['phone_number']
         code = serializer.validated_data['code']
@@ -137,12 +139,14 @@ class RequestCodeForLogin(generics.GenericAPIView):
     serializer_class = RequestOtpCodeSerializer   
 
     def get_queryset(self):
-            phone = self.request.data.get('phone')
+            phone = self.request.data.get('phone_number')
             return User.objects.filter(Q(phone_number=phone)&Q(is_phone_active=True)) 
             
     def post(self, request, *args, **kwargs):
-        user_phone = self.request.data.get('phone')
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        phone = serializer.validated_data['phone_number']
         if self.get_queryset():
-            return get_otpcode(user_phone, 'logincode')
+            return get_otpcode(phone, 'logincode')
         else:
-            return Response(data={"msg":f"number {user_phone} is not avtive or valid"}, status=status.HTTP_204_NO_CONTENT)              
+            return Response(data={"msg":f"number {phone} is not avtive or valid"}, status=status.HTTP_204_NO_CONTENT)              
