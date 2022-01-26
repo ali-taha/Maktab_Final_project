@@ -20,12 +20,16 @@ import random
 import json, requests
 from django.db.models import Q, Avg, Count, Sum
 from rest_framework.parsers import FormParser, MultiPartParser
+import environ
 
 
 User = get_user_model()
 redis_client = redis.StrictRedis(decode_responses=True)
 
-
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 class SignUpApi(generics.CreateAPIView):
 
@@ -85,10 +89,10 @@ def get_otpcode(phone_number, type):
 
         url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
         payload = json.dumps({
-        "username": "09190771284",
-        "password": "6ZRS#",
+        "username": env.str('SMS_USERNAME'),
+        "password": env.str('SMS_PASSWORD'),
         "to": f"{phone_number}",
-        "from": "50004001771284",
+        "from": env.str('SMS_NUMBER'),
         "text": f"your code : {otp}\n ali_shop"
         })
         headers = {
@@ -143,7 +147,3 @@ class RequestCodeForLogin(generics.GenericAPIView):
             return get_otpcode(user_phone, 'logincode')
         else:
             return Response(data={"msg":f"number {user_phone} is not avtive or valid"}, status=status.HTTP_204_NO_CONTENT)              
-    
-
-
-
