@@ -1,18 +1,6 @@
-from django.views.generic.edit import FormView
-from django.views.generic import View
-from users.forms import RegisterSeller, SelllerLoginForm
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from rest_framework.permissions import IsAuthenticated
-from django.urls import reverse
-from django.contrib import messages
-from django.shortcuts import (
-    redirect,
-    render,
-    get_list_or_404,
-    get_object_or_404,
-    HttpResponse,
-)
-from rest_framework import status, generics, mixins, viewsets
+from rest_framework import status, generics
 from rest_framework.response import Response
 from users.api.serializers import UserSignUpSerializer, UserDetailSerializer, UserUpdateSerializer, ConfirmNumberSerializer,RequestOtpCodeSerializer
 import random

@@ -57,7 +57,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         }
 
         
-
 class ConfirmNumberSerializer(serializers.Serializer):
     phone_regex = RegexValidator(regex=r'^0?9\d{9}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = serializers.CharField(validators=[phone_regex], max_length=15, )        

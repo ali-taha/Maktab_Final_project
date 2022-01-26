@@ -35,7 +35,6 @@ class TestAPI(APITestCase):
         data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
-        print(resp.data)
         self.assertEqual(resp.status_code, 201)
 
      def test_wrong_user_sign_up(self):
@@ -44,7 +43,6 @@ class TestAPI(APITestCase):
         self.client.post(url, data=data)
         data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
         resp = self.client.post(url, data=data)
-        print(resp.data)
         self.assertEqual(resp.status_code, 400)
         
      def test_user_sgn_in(self):
@@ -52,6 +50,15 @@ class TestAPI(APITestCase):
         url = reverse("sign_up_api")
         resp = self.client.post(url, data=data)
         data = {"username": "testi", "password": "testi"}
+        url2 = reverse("sign_in_api")
+        resp2 = self.client.post(url2, data=data)
+        self.assertEqual(resp2.status_code, 200) 
+
+     def test_user_sgn_in_with_phone_number(self):
+        data = {"username": "testi", "password": "testi", "email":"testi@gmail.com", "phone_number":"09037226589"}
+        url = reverse("sign_up_api")
+        resp = self.client.post(url, data=data)
+        data = {"username": "09037226589", "password": "testi"}
         url2 = reverse("sign_in_api")
         resp2 = self.client.post(url2, data=data)
         self.assertEqual(resp2.status_code, 200)   
@@ -111,17 +118,12 @@ class TestAPI(APITestCase):
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
 
-
      def test_pay_basket_api(self):
          self.client.force_authenticate(self.user)
-         basket1 = self.basket1
          url= reverse("pay_basket_api", args=(f'{self.basket1.pk}',))
          resp = self.client.put(url)
-         print(resp.data)
-         # self.basket1.status = "con"
+         #!!! self.basket1.status = "con"
          self.assertEqual(resp.status_code, 200)
-         print(self.basket1.status)
-
 
      def test_show_baskets_api(self):
          self.client.force_authenticate(self.user)
