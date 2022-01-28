@@ -169,7 +169,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'users.backend_phone_number.CustomAuthentication',
     'users.backend_otp_code.CustomAuthenticationOtp',
-
 ]
 
 
