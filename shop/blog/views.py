@@ -69,7 +69,7 @@ def category_post(request, slug):
         request, "post/category_post.html", {"posts": posts, "category_name": slug}
     )
 
-
+@login_required(login_url="/blog/login")
 def dashboard(request):
     user = request.user
     user_posts = Post.objects.filter(writer=user)
@@ -146,7 +146,7 @@ def register_form(request):
     return render(request, "form/register_form.html", {"form": form})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def set_new_password(request):
     form = ResetPassword(None or request.POST)
     if form.is_valid():
@@ -160,7 +160,7 @@ def set_new_password(request):
     return render(request, "form/reset_password_form.html", {"form": form})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def add_tag_form(request):
     form = TagForm(None or request.POST)
     print(request.user.id)  ###!!!
@@ -171,7 +171,7 @@ def add_tag_form(request):
     return render(request, "form/add_tag_form.html", {"form": form})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def add_category_form(request):
     form = CategoryForm(None or request.POST)
     print(request.user.id)  ###!!!
@@ -182,7 +182,7 @@ def add_category_form(request):
     return render(request, "form/add_category_form.html", {"form": form})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def add_post_form(request):
     form = PostForm(None or request.POST)
     print(request.user.id)  ###!!!
@@ -196,7 +196,7 @@ def add_post_form(request):
     return render(request, "form/add_post_form.html", {"form": form})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def edit_tag_form(request, slug):
     tag = get_object_or_404(BlogTag, slug=slug)
     form = TagForm(instance=tag)
@@ -209,7 +209,7 @@ def edit_tag_form(request, slug):
     return render(request, "form/edit_tag_form.html", {"form": form, "slug": slug})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def edit_category_form(request, slug):
     category = get_object_or_404(BlogCategory, slug=slug)
     form = CategoryForm(instance=category)
@@ -222,7 +222,7 @@ def edit_category_form(request, slug):
     return render(request, "form/edit_category_form.html", {"form": form, "slug": slug})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def edit_post_form(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.user.id == post.writer.id:
@@ -239,7 +239,7 @@ def edit_post_form(request, slug):
         return redirect(reverse("home"))
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def delete_tag_form(request, slug):
     tag = get_object_or_404(BlogTag, slug=slug)
     form = DeleteTagForm(instance=tag)
@@ -250,7 +250,7 @@ def delete_tag_form(request, slug):
     return render(request, "form/delete_tag_form.html", {"form": form, "slug": slug})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def delete_category_form(request, slug):
     category = get_object_or_404(BlogCategory, slug=slug)
     form = DeleteCategoryForm(instance=category)
@@ -263,7 +263,7 @@ def delete_category_form(request, slug):
     )
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/blog/login")
 def delete_post_form(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.user.id == post.writer.id:
