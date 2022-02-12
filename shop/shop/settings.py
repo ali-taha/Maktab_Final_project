@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'django_extensions',
     'users',
     'blog',
     'online_shop',
@@ -164,6 +165,8 @@ EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+SHELL_PLUS = "ipython"
+SHELL_PLUS_PRINT_SQL = True
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

@@ -69,10 +69,18 @@ class ProfileApi(generics.RetrieveUpdateAPIView):
 
 def get_otpcode(phone_number, type):
         otp = random.randint(1000,9999)
+        valid_code_1 = cache.get(f'active_code:{phone_number}')
+        valid_code_2 = cache.get(f'login_code:{phone_number}')
         if type == 'activation':
-            cache.set(f'active_code:{phone_number}',otp,300)
+            if not valid_code_1:
+                cache.set(f'active_code:{phone_number}',otp,300)
+            else:
+                return Response(data={"msg":"please wait some minutes"}, status=status.HTTP_400_BAD_REQUEST)       
         elif type == 'logincode':
-            cache.set(f'login_code:{phone_number}', otp, 300)
+            if not valid_code_2:
+                cache.set(f'login_code:{phone_number}', otp, 300)
+            else:
+                return Response(data={"msg":"please wait some minutes"}, status=status.HTTP_400_BAD_REQUEST)       
 
         url = "https://rest.payamak-panel.com/api/SendSMS/SendSMS"
         payload = json.dumps({

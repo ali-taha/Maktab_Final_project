@@ -8,15 +8,9 @@ from .models import Store, Product, Basket, BasketItem, StoreType
 from django.http import Http404
 from django.db.models.functions import TruncMonth
 from django.db.models import Q, Avg, Count, Sum
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
 from .filter import BasketListFilter
 from django.db.models import OuterRef, Subquery
-from rest_framework import status, generics, mixins, viewsets
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .filter import StoreListFilter, StoreTypeFilter,ProductListFilter
-from drf_yasg.utils import swagger_auto_schema
 
 
 User = get_user_model()

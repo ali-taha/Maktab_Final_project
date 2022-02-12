@@ -3,6 +3,17 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from model_mommy import mommy
 from .models import Store, StoreType, ProductTag, Product, Basket, ProductCategory
+from unittest.mock import patch
+from users.api.views import  get_otpcode
+from unittest.mock import MagicMock
+from rest_framework import status, generics
+from rest_framework.response import Response
+
+
+
+
+def mocked_this(arg1,arg2):
+    return Response(data={"msg":f"code sent to"}, status=status.HTTP_200_OK) 
 
 User = get_user_model()
 
@@ -12,7 +23,7 @@ class TestAPI(APITestCase):
         self.user = User.objects.create(
             username="test",
             password="123",
-            phone_number='09122975260',
+            phone_number='09037229779',
             email='test@gmail.com'
         )
         self.store_type= StoreType.objects.create(title="Type")
@@ -131,4 +142,10 @@ class TestAPI(APITestCase):
          resp=self.client.get(url) 
          self.assertEqual(resp.status_code, 200)
          self.assertEqual(len(resp.data), 1)
+
+     @patch("users.api.views.get_otpcode", mocked_this)
+     def test_new(self):
+        url= reverse("request_code")
+        data = {"phone_number":'09037229779'}
+        resp=self.client.post(url, data=data)
 

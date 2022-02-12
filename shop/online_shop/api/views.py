@@ -1,23 +1,12 @@
-from django.views.generic import ListView, DetailView, TemplateView, CreateView, DeleteView, UpdateView, View
-from django.views.generic.edit import FormView, ModelFormMixin, FormMixin
-from online_shop.forms import CreateStoreForm, AddProductForm, UpdateBasketForm
 from django.contrib.auth import  get_user_model
-from django.urls import reverse
-from django.contrib import messages
 from online_shop.models import Store, Product, Basket, BasketItem, StoreType
 from django.http import Http404
-from django.db.models.functions import TruncMonth
 from django.db.models import Q, Avg, Count, Sum
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_list_or_404, get_object_or_404, HttpResponse
-from online_shop.filter import BasketListFilter
-from django.db.models import OuterRef, Subquery
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from online_shop.api.serializers import StoreListSerializer, StoreTypeListSerializer, ProductListSerializer, CreateBasketSerializer, CreateBasketItemSerializer, DeleteBasketItemSerializer, PayBasketerializer, ShowBasketsSerializer
 from online_shop.filter import StoreListFilter, StoreTypeFilter,ProductListFilter
-from drf_yasg.utils import swagger_auto_schema
 
 
 User = get_user_model()

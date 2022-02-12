@@ -68,7 +68,7 @@
                         <span class="text-secondary text-xs font-weight-bold">{{item.updated_on}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <!-- action="{% url 'basket_update' item.id %}" use ajax -->
+                        <!-- action="{% url 'basket_update' item.id %}" not use ajax -->
                         <form method="post" id="editForm" item-id={{item.id}} >
                           {% csrf_token %}
                           {{form.as_p}}
@@ -112,8 +112,6 @@
           }
           const csrftoken = getCookie('csrftoken');
 
-            function refreshPage() {
-                location.reload(true);}
 
 
             $(".changer").on("click",function () {
@@ -129,7 +127,7 @@
 
               });
 
-        
+              window.location.reload();
             });
             // $(document).ajaxStop(function(){
             //         window.location.reload();
