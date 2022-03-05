@@ -19,7 +19,7 @@ User = get_user_model()
 class SellerStoreList(ListView):
     template_name = 'seller_dashboard/store_list.html'
     paginate_by = 100
-
+    
     def get_queryset(self, *args, **kwargs):
         queryset = Store.alive.filter(owner=self.request.user)
         return queryset        
@@ -102,9 +102,11 @@ class AddProduct(FormView):
     template_name = "seller_dashboard/add_product.html"        
     form_class = AddProductForm
 
+    # pass request data to form class
     def get_form_kwargs(self):
         kwargs = super(AddProduct, self).get_form_kwargs()
-        kwargs.update({'request': self.request})
+        # kwargs.update({'request': self.request})
+        kwargs['request'] = self.request
         return kwargs
 
     def form_valid(self, form):

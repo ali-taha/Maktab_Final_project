@@ -12,7 +12,6 @@
     <div class="col-md-12" align="center">
         {% if request.GET.next %}
         <form action="{% url 'login_form' %}?next={{request.GET.next}}" method="post">
-        
         {% else %}
         <form action="{% url 'login_form' %}" method="post">
         {% endif %}

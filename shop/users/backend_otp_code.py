@@ -18,6 +18,7 @@ class CodeUnavailable(APIException):
     default_detail = 'Code is Not Available'
     default_code = 'code_unavailable' 
             
+     
 class CustomAuthenticationOtp(ModelBackend):
 
     def authenticate(self, request, username, password, **kwargs):

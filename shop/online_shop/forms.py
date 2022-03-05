@@ -44,6 +44,7 @@ class CreateStoreForm(forms.ModelForm):
 
 class AddProductForm(forms.ModelForm):
 
+    # get request data from view
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(AddProductForm, self).__init__(*args, **kwargs)
