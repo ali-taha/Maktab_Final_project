@@ -15,7 +15,6 @@
         {% else %}
         <form action="{% url 'login_form' %}" method="post">
         {% endif %}
-        <form action="{% url 'login_form' %}?next={{request.GET.next}}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="ورود">
