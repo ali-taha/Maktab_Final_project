@@ -2,3 +2,5 @@ envshop
 .vscode
 shop/.env
 shop/static/shop_dashboard/img
+
+#comment
